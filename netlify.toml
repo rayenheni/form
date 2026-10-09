@@ -1,0 +1,12 @@
+# Netlify configuration for this Vite + React site.
+# The build settings mirror .github/workflows/deploy-pages.yml (Node 22, `npm run build`, output in `dist`).
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Pins the Node.js major version so Netlify's image defaults can't change the build.
+  NODE_VERSION = "22"
+  # To send contact-form leads to a webhook or form backend, set VITE_LEADS_ENDPOINT
+  # in the Netlify UI (Project configuration > Environment variables), not here.

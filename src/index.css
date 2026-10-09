@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Charte : bleu + jaune · mode clair ───────────────────────── */
+@theme {
+  --font-sans: "Inter", "Cairo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Cairo", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Bleu — couleur principale */
+  --color-brand-50: #f3f6ff;
+  --color-brand-100: #e4ebff;
+  --color-brand-200: #cbd8ff;
+  --color-brand-300: #a3bbff;
+  --color-brand-400: #6f93fa;
+  --color-brand-500: #4271f0;
+  --color-brand-600: #2456d6;
+  --color-brand-700: #1c44ae;
+  --color-brand-800: #18378a;
+  --color-brand-900: #142c6b;
+  --color-brand-950: #0b1a45;
+
+  /* Jaune — couleur d'accent */
+  --color-sun-50: #fffbeb;
+  --color-sun-100: #fff4c4;
+  --color-sun-200: #ffe88a;
+  --color-sun-300: #ffd94d;
+  --color-sun-400: #ffc926;
+  --color-sun-500: #f2ad00;
+  --color-sun-600: #cc8a00;
+
+  --shadow-card: 0 1px 2px rgb(11 26 69 / 0.04), 0 10px 30px -14px rgb(11 26 69 / 0.14);
+  --shadow-card-hover: 0 2px 4px rgb(11 26 69 / 0.04), 0 28px 50px -20px rgb(36 86 214 / 0.32);
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-blob: blob 18s ease-in-out infinite;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white font-sans text-slate-600 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Compense la barre de navigation fixe lors des sauts d'ancre */
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  ::selection {
+    background: var(--color-sun-300);
+    color: var(--color-brand-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 3px;
+  }
+
+  /* Contour de focus lisible sur les blocs bleus */
+  .on-blue :focus-visible {
+    outline-color: var(--color-sun-300);
+  }
+
+  .on-light :focus-visible {
+    outline-color: var(--color-brand-600);
+  }
+
+  /* ── Arabe : pas de chasse élargie (illisible en arabe) ── */
+  html[lang="ar"] .eyebrow {
+    letter-spacing: 0.01em;
+  }
+  html[lang="ar"] body {
+    letter-spacing: 0;
+  }
+}
+
+/* ───────────────────────── Composants ───────────────────────── */
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+  }
+
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl px-6 py-3.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300;
+  }
+  .btn:active {
+    scale: 0.98;
+  }
+  .btn-primary {
+    @apply bg-brand-600 text-white shadow-lg shadow-brand-600/25 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-600/30;
+  }
+  .btn-sun {
+    @apply bg-sun-400 text-brand-950 shadow-lg shadow-sun-500/30 hover:-translate-y-0.5 hover:bg-sun-300 hover:shadow-xl hover:shadow-sun-500/40;
+  }
+  .btn-outline {
+    @apply border border-brand-200 bg-white text-brand-800 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50;
+  }
+
+  /* Reflet lumineux au survol des boutons pleins */
+  .btn-primary::after,
+  .btn-sun::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.35) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html[dir="rtl"] .btn-primary::after,
+  html[dir="rtl"] .btn-sun::after {
+    transform: translateX(120%) scaleX(-1);
+  }
+  .btn-primary:hover::after,
+  .btn-sun:hover::after {
+    transform: translateX(120%);
+  }
+  html[dir="rtl"] .btn-primary:hover::after,
+  html[dir="rtl"] .btn-sun:hover::after {
+    transform: translateX(-120%) scaleX(-1);
+  }
+
+  /* Verre dépoli clair */
+  .glass {
+    background: rgb(255 255 255 / 0.82);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgb(203 216 255 / 0.6);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 18px 40px -18px rgb(11 26 69 / 0.28);
+  }
+
+  /* Trames décoratives */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(36 86 214 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(36 86 214 / 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 25%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 25%, #000 35%, transparent 100%);
+  }
+  .bg-grid-white {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(currentColor 1.6px, transparent 1.6px);
+    background-size: 14px 14px;
+  }
+
+  /* Halo qui suit le curseur sur les cartes */
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 50%),
+      rgb(36 86 214 / 0.07),
+      transparent 60%
+    );
+  }
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* Surligneur jaune animé */
+  .marker {
+    padding: 0 0.12em;
+    margin: 0 -0.12em;
+    border-radius: 0.2em;
+    background-image: linear-gradient(100deg, var(--color-sun-300), var(--color-sun-400));
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    background-size: 0% 0.4em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background-size 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+  }
+  .marker-on {
+    background-size: 100% 0.4em;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ───────────────────────── Animations ───────────────────────── */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* En arabe (RTL), le défilement repart dans l'autre sens pour rester naturel */
+html[dir="rtl"] .animate-marquee {
+  animation-direction: reverse;
+}
+
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(30px, -40px, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-24px, 24px, 0) scale(0.96);
+  }
+}
+
+/* ───────────────────────── Accessibilité ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-blob {
+    animation: none !important;
+  }
+  .marker,
+  .btn,
+  .btn::after {
+    transition: none;
+  }
+}

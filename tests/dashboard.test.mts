@@ -180,6 +180,129 @@ await test("Tableau de bord : sans donnée, l'écran vide s'affiche", async () =
   assert.ok(html.includes("Aucune demande pour l"), "état vide des demandes absent");
 });
 
+/* ─────────────── Collecte sur le site public ─────────────── */
+
+const { usePageviewTracking } = await import("../src/lib/tracking");
+
+/** Composant minimal exerçant le crochet de collecte, comme le fait `Site`. */
+function TrackingProbe({ lang }: { lang: "fr" | "ar" }) {
+  usePageviewTracking(lang);
+  return React.createElement("div", null, "sonde");
+}
+
+/** Monte la sonde, laisse les effets aboutir, renvoie le magasin alimenté. */
+async function mountProbe(lang: "fr" | "ar" = "fr") {
+  const store = createLocalAnalyticsStore(memoryKv());
+  setAnalyticsStore(store);
+  window.localStorage.clear();
+
+  const container = window.document.getElementById("root");
+  assert.ok(container, "conteneur #root absent");
+  container.innerHTML = "";
+
+  const root: Root = createRoot(container as unknown as Parameters<typeof createRoot>[0]);
+  await act(async () => {
+    root.render(React.createElement(TrackingProbe, { lang }));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+
+  const html = container.innerHTML;
+  await act(async () => {
+    root.unmount();
+  });
+  return { store, html };
+}
+
+/** Force `document.referrer` (happy-dom le calcule depuis l'URL, non modifiable autrement). */
+function setReferrer(value: string) {
+  Object.defineProperty(window.document, "referrer", { value, configurable: true });
+}
+
+await test("Collecte : une page vue est enregistrée au montage du site", async () => {
+  setReferrer("");
+  const { store } = await mountProbe();
+  const views = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(views.length, 1, `1 visite attendue, ${views.length} enregistrée(s)`);
+});
+
+await test("Collecte : sans référant, la source est « Direct »", async () => {
+  setReferrer("");
+  const { store } = await mountProbe();
+  const [view] = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(view.source, "Direct");
+});
+
+await test("Collecte : un référant Google est reconnu comme source", async () => {
+  setReferrer("https://www.google.com/search?q=formation+droit");
+  const { store } = await mountProbe();
+  const [view] = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(view.source, "Google");
+});
+
+await test("Collecte : la langue du site est transmise", async () => {
+  setReferrer("");
+  const { store } = await mountProbe("ar");
+  const [view] = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(view.lang, "ar");
+});
+
+await test("Collecte : un visiteur stable est identifié", async () => {
+  setReferrer("");
+  const { store } = await mountProbe();
+  const [view] = await store.listPageviews(new Date(0).toISOString());
+  assert.ok(view.visitorId.length > 5, `identifiant de visiteur absent ou trop court (« ${view.visitorId} »)`);
+});
+
+await test("Collecte : la même page n'est pas comptée deux fois de suite", async () => {
+  setReferrer("");
+  const first = await mountProbe();
+  /* Second montage avec le même localStorage : la déduplication doit agir. */
+  const store = first.store;
+  const container = window.document.getElementById("root");
+  assert.ok(container);
+  container.innerHTML = "";
+  const root: Root = createRoot(container as unknown as Parameters<typeof createRoot>[0]);
+  await act(async () => {
+    root.render(React.createElement(TrackingProbe, { lang: "fr" }));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  await act(async () => {
+    root.unmount();
+  });
+
+  const views = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(views.length, 1, `déduplication inefficace : ${views.length} visites pour une même page`);
+});
+
+await test("Collecte : un échec d'enregistrement ne casse pas le site", async () => {
+  setReferrer("");
+  const broken = createLocalAnalyticsStore(memoryKv());
+  broken.recordPageview = () => Promise.reject(new Error("réseau indisponible"));
+  setAnalyticsStore(broken);
+  window.localStorage.clear();
+
+  const container = window.document.getElementById("root");
+  assert.ok(container);
+  container.innerHTML = "";
+  const root: Root = createRoot(container as unknown as Parameters<typeof createRoot>[0]);
+  await act(async () => {
+    root.render(React.createElement(TrackingProbe, { lang: "fr" }));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  const html = container.innerHTML;
+  await act(async () => {
+    root.unmount();
+  });
+
+  assert.ok(html.includes("sonde"), "le site ne s'est pas affiché malgré l'échec de la collecte");
+});
+
 setAnalyticsStore(null);
 
 /* ─────────────────────────── Bilan ─────────────────────────── */

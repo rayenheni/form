@@ -303,6 +303,49 @@ await test("Collecte : un échec d'enregistrement ne casse pas le site", async (
   assert.ok(html.includes("sonde"), "le site ne s'est pas affiché malgré l'échec de la collecte");
 });
 
+await test("Collecte : naviguer vers une autre section enregistre une nouvelle visite", async () => {
+  setReferrer("");
+  const store = createLocalAnalyticsStore(memoryKv());
+  setAnalyticsStore(store);
+  window.localStorage.clear();
+  window.location.hash = "#cours";
+
+  const container = window.document.getElementById("root");
+  assert.ok(container);
+  container.innerHTML = "";
+  const root: Root = createRoot(container as unknown as Parameters<typeof createRoot>[0]);
+  await act(async () => {
+    root.render(React.createElement(TrackingProbe, { lang: "fr" }));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+
+  const initial = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(initial.length, 1, `1 visite initiale attendue, ${initial.length} enregistrée(s)`);
+  assert.equal(initial[0].path, "#cours", `chemin initial inattendu : « ${initial[0].path} »`);
+
+  /* Le site est une seule page : la navigation se fait par ancres. */
+  await act(async () => {
+    window.location.hash = "#tarifs";
+    window.dispatchEvent(new window.Event("hashchange"));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+
+  const after = await store.listPageviews(new Date(0).toISOString());
+  assert.equal(after.length, 2, `2 visites attendues après navigation, ${after.length} enregistrée(s)`);
+  assert.ok(
+    after.some((view) => view.path === "#tarifs"),
+    `la section « #tarifs » n'a pas été comptée (chemins : ${after.map((v) => v.path).join(", ")})`
+  );
+
+  await act(async () => {
+    root.unmount();
+  });
+});
+
 setAnalyticsStore(null);
 
 /* ─────────────────────────── Bilan ─────────────────────────── */

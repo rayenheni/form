@@ -11,10 +11,11 @@
     "seed:content": "esbuild scripts/seed-content.mts --bundle --platform=node --format=esm --packages=external --outfile=scripts/.tmp/seed-content.mjs --log-level=error && node scripts/.tmp/seed-content.mjs",
     "typecheck": "tsc --noEmit",
     "test:admin": "esbuild tests/admin.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --log-level=error --outfile=tests/.tmp/admin.test.mjs && node tests/.tmp/admin.test.mjs",
-    "test": "npm run test:store && npm run test:admin && npm run test:analytics",
+    "test": "npm run test:store && npm run test:admin && npm run test:analytics && npm run test:dashboard",
     "test:preview": "npm run build && esbuild tests/preview.test.mts --bundle --platform=node --format=esm --packages=external --outfile=tests/.tmp/preview.test.mjs --log-level=error && node tests/.tmp/preview.test.mjs",
     "test:preview:noenv": "mv .env.local /tmp/.env.local.bak 2>/dev/null; npx vite build; mv /tmp/.env.local.bak .env.local 2>/dev/null; esbuild tests/preview-noenv.test.mts --bundle --platform=node --format=esm --packages=external --outfile=tests/.tmp/preview-noenv.test.mjs --log-level=error && node tests/.tmp/preview-noenv.test.mjs",
-    "test:analytics": "esbuild tests/analytics.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/analytics.test.mjs --log-level=error && node tests/.tmp/analytics.test.mjs"
+    "test:analytics": "esbuild tests/analytics.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/analytics.test.mjs --log-level=error && node tests/.tmp/analytics.test.mjs",
+    "test:dashboard": "esbuild tests/dashboard.test.mts --bundle --platform=node --format=esm --packages=external --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/dashboard.test.mjs --log-level=error && node tests/.tmp/dashboard.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

@@ -6,9 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:store": "esbuild tests/store.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/store.test.mjs --log-level=error && node tests/.tmp/store.test.mjs",
+    "seed:content": "esbuild scripts/seed-content.mts --bundle --platform=node --format=esm --packages=external --outfile=scripts/.tmp/seed-content.mjs --log-level=error && node scripts/.tmp/seed-content.mjs",
+    "typecheck": "tsc --noEmit",
+    "test:admin": "esbuild tests/admin.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --log-level=error --outfile=tests/.tmp/admin.test.mjs && node tests/.tmp/admin.test.mjs",
+    "test": "npm run test:store && npm run test:admin && npm run test:analytics",
+    "test:preview": "npm run build && esbuild tests/preview.test.mts --bundle --platform=node --format=esm --packages=external --outfile=tests/.tmp/preview.test.mjs --log-level=error && node tests/.tmp/preview.test.mjs",
+    "test:preview:noenv": "mv .env.local /tmp/.env.local.bak 2>/dev/null; npx vite build; mv /tmp/.env.local.bak .env.local 2>/dev/null; esbuild tests/preview-noenv.test.mts --bundle --platform=node --format=esm --packages=external --outfile=tests/.tmp/preview-noenv.test.mjs --log-level=error && node tests/.tmp/preview-noenv.test.mjs",
+    "test:analytics": "esbuild tests/analytics.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/analytics.test.mjs --log-level=error && node tests/.tmp/analytics.test.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "clsx": "2.1.1",
     "framer-motion": "^14.0.0",
     "lucide-react": "^1.53.0",
@@ -22,6 +31,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
+    "happy-dom": "^20.14.6",
     "tailwindcss": "4.1.17",
     "typescript": "5.9.3",
     "vite": "7.3.2",

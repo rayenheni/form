@@ -4,7 +4,7 @@ import { Laptop, Users } from "lucide-react";
 import { contact } from "../constants/content";
 import { useLang } from "../i18n/LanguageContext";
 import { cn } from "../utils/cn";
-import { ArrowFwd, FacebookIcon, Marker, Reveal, SectionHeading, ease } from "./ui";
+import { ArrowFwd, ContentIcon, FacebookIcon, Marker, Reveal, SectionHeading, ease } from "./ui";
 
 interface ShowcaseProps {
   onRequest: (interest: string) => void;
@@ -27,7 +27,6 @@ export default function Showcase({ onRequest }: ShowcaseProps) {
   tabRefsReset();
 
   const program = s.items[active];
-  const ProgramIcon = program.icon;
 
   // Navigation au clavier entre les onglets (flèches, Début, Fin)
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -76,7 +75,6 @@ export default function Showcase({ onRequest }: ShowcaseProps) {
           >
             {s.items.map((item, index) => {
               const selected = index === active;
-              const Icon = item.icon;
               return (
                 <button
                   key={item.id}
@@ -102,7 +100,7 @@ export default function Showcase({ onRequest }: ShowcaseProps) {
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}
-                  <Icon className="relative h-4 w-4 shrink-0" aria-hidden="true" />
+                  <ContentIcon name={item.icon} className="relative h-4 w-4 shrink-0" />
                   <span className="relative whitespace-nowrap">{item.tab}</span>
                 </button>
               );
@@ -127,7 +125,7 @@ export default function Showcase({ onRequest }: ShowcaseProps) {
               <div className="p-6 sm:p-10 lg:p-12">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-sun-400 text-brand-950">
-                    <ProgramIcon className="h-5 w-5" aria-hidden="true" />
+                    <ContentIcon name={program.icon} className="h-5 w-5" />
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
                     <Laptop className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

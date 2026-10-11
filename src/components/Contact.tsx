@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Check, ChevronDown, Mail, MapPin, Phone } from "lucide-react";
-import { contact } from "../constants/content";
+import { Check, ChevronDown, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { contact, telHref } from "../constants/content";
 import { useLang } from "../i18n/LanguageContext";
 import { submitLead, type SubmitResult } from "../lib/leads";
+import { parseSource } from "../lib/analytics";
+import { getAnalyticsStore } from "../store/analytics";
 import { cn } from "../utils/cn";
 import { ArrowFwd, FacebookIcon, Reveal } from "./ui";
 
@@ -64,6 +66,22 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
         submittedAt: new Date().toISOString(),
         locale: lang,
       });
+
+      /* Compte la demande dans le tableau de bord. Un échec d'enregistrement
+         ne doit jamais faire échec l'envoi : la demande est déjà transmise. */
+      const referrer = typeof window !== "undefined" ? window.document.referrer ?? "" : "";
+      await getAnalyticsStore()
+        .recordReservation({
+          name,
+          email,
+          phone,
+          interest,
+          message,
+          source: parseSource(referrer, typeof window !== "undefined" ? window.location.search : ""),
+          lang,
+        })
+        .catch(() => undefined);
+
       form.reset();
       setStatus(result);
     } catch {
@@ -112,16 +130,32 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                       <span className="break-all font-semibold underline-offset-4 group-hover:underline">{contact.email}</span>
                     </a>
                   </li>
-                  {contact.phone && (
-                    <li>
-                      <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="group flex items-center gap-4 rounded-xl">
+                  {contact.phones.map((number) => (
+                    <li key={number}>
+                      <a href={telHref(number)} className="group flex items-center gap-4 rounded-xl">
                         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/10 text-sun-300 ring-1 ring-white/15 transition-colors group-hover:bg-sun-400 group-hover:text-brand-950">
                           <Phone className="h-5 w-5" aria-hidden="true" />
                         </span>
-                        <span dir="ltr" className="font-semibold underline-offset-4 group-hover:underline">{contact.phone}</span>
+                        <span dir="ltr" className="font-semibold underline-offset-4 group-hover:underline">
+                          {number}
+                        </span>
                       </a>
                     </li>
-                  )}
+                  ))}
+                  <li>
+                    <a
+                      href={contact.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-4 rounded-xl"
+                    >
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/10 text-sun-300 ring-1 ring-white/15 transition-colors group-hover:bg-sun-400 group-hover:text-brand-950">
+                        <MessageSquare className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span className="font-semibold underline-offset-4 group-hover:underline">{s.waLabel}</span>
+                      <span className="sr-only">{t.programs.newTab}</span>
+                    </a>
+                  </li>
                   <li>
                     <a href={contact.facebook} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-4 rounded-xl">
                       <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/10 text-sun-300 ring-1 ring-white/15 transition-colors group-hover:bg-sun-400 group-hover:text-brand-950">

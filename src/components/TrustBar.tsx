@@ -1,5 +1,5 @@
 import { useLang } from "../i18n/LanguageContext";
-import { Reveal } from "./ui";
+import { ContentIcon, Reveal } from "./ui";
 
 export default function TrustBar() {
   const { t } = useLang();
@@ -9,11 +9,11 @@ export default function TrustBar() {
     <section aria-label={ariaLabel} className="relative bg-white pb-20 pt-14 sm:pb-24 sm:pt-16">
       <div className="container-x">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {highlights.map(({ icon: Icon, title, description }, index) => (
+          {highlights.map(({ icon, title, description }, index) => (
             <Reveal key={title} delay={index * 0.08} className="h-full">
               <div className="group flex h-full items-start gap-4 rounded-2xl border border-brand-100 bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-sun-300 hover:shadow-card-hover">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-600/25 transition-all duration-300 group-hover:-rotate-6 group-hover:bg-sun-400 group-hover:text-brand-950 group-hover:shadow-sun-500/30">
-                  <Icon className="h-6 w-6" aria-hidden="true" />
+                  <ContentIcon name={icon} className="h-6 w-6" />
                 </span>
                 <div>
                   <p className="font-display text-base font-bold text-brand-950">{title}</p>

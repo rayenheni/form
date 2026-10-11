@@ -1,0 +1,59 @@
+/**
+ * Vérifie le build SANS variables d'environnement (cas réel des aperçus arena.site :
+ * `.env.local` est gitignoré, donc absent du build). Le chemin d'admin doit retomber
+ * sur le repli commité et rester joignable.
+ */
+import assert from "node:assert/strict";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { Window } from "happy-dom";
+
+const dist = readFileSync("dist/index.html", "utf8");
+assert.ok(!dist.includes('VITE_ADMIN_PATH:"'), "ce test exige un build SANS VITE_ADMIN_PATH");
+
+const scripts = [...dist.matchAll(/<script type="module"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+assert.equal(scripts.length, 1);
+mkdirSync("tests/.tmp", { recursive: true });
+const bundleFile = "tests/.tmp/bundle-noenv.mjs";
+writeFileSync(bundleFile, scripts[0]);
+
+let passed = 0;
+const failures: string[] = [];
+
+async function scenario(label: string, url: string, assertions: (html: string) => void) {
+  const window = new Window({ url, settings: { disableJavaScriptFileLoading: true, disableCSSFileLoading: true } });
+  const withoutScripts = dist.replace(/<script type="module"[^>]*>[\s\S]*?<\/script>/g, "");
+  window.document.write(withoutScripts);
+  const source = window as unknown as Record<string, unknown>;
+  for (const name of ["window","document","navigator","location","HTMLElement","Element","Node","Event","CustomEvent","getComputedStyle","requestAnimationFrame","cancelAnimationFrame","localStorage","history","DOMParser","MutationObserver","ResizeObserver","matchMedia","fetch","CSS"]) {
+    try { Object.defineProperty(globalThis, name, { value: source[name], writable: true, configurable: true }); } catch {}
+  }
+  (globalThis as Record<string, unknown>).IS_REACT_ACT_ENVIRONMENT = false;
+  class IO { observe(){} unobserve(){} disconnect(){} takeRecords(){return[];} }
+  Object.defineProperty(globalThis, "IntersectionObserver", { value: IO, writable: true, configurable: true });
+  Object.defineProperty(window, "IntersectionObserver", { value: IO, writable: true, configurable: true });
+  try {
+    await import(`${process.cwd()}/${bundleFile}?v=${encodeURIComponent(url)}`);
+    await new Promise((r) => setTimeout(r, 200));
+    assertions(window.document.body.innerHTML);
+    passed += 1; console.log(`OK   ${label}`);
+  } catch (e) { failures.push(label); console.log(`FAIL ${label}\n     ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+const base = "https://sbx-l224m3ykcpixobbd.arena.site";
+
+// Sans VITE_PREVIEW_ADMIN, la racine = site public, avec le bouton Administration.
+await scenario("racine (build sans env) → site public + bouton Administration", `${base}/`, (html) => {
+  assert.ok(html.includes("lead-name") || html.includes("contact"), "formulaire de contact absent");
+  assert.ok(html.includes("#/admin-fbl"), "bouton Administration absent (repli commité non appliqué)");
+  assert.ok(html.includes("build admin-v3"), "repère de version absent");
+  assert.ok(html.includes("Ouvrir l'administration"), "onglet flottant Administration absent");
+  assert.ok(html.includes("fixed end-0 top-1/2"), "onglet flottant mal positionné");
+});
+
+// La route admin via le repli ouvre bien l'administration.
+await scenario("#/admin-fbl (repli) → administration", `${base}/#/admin-fbl`, (html) => {
+  assert.ok(html.includes("accès administrateur") || html.includes("Créer l"), `admin absente (extrait : ${html.slice(0,160)}…)`);
+});
+
+console.log(`\n${passed} scénario(s) réussi(s), ${failures.length} échec(s).`);
+process.exit(failures.length > 0 ? 1 : 0);

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { content, type Lang, type SiteContent } from "../constants/content";
+import { content as bundledContent, type Lang, type SiteContent } from "../constants/content";
+import { useContent } from "./ContentProvider";
 
 const STORAGE_KEY = "fbl-lang";
 
@@ -12,7 +13,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue>({
   lang: "fr",
   setLang: () => {},
-  t: content.fr,
+  t: bundledContent.fr,
 });
 
 function getInitialLang(): Lang {
@@ -24,6 +25,7 @@ function getInitialLang(): Lang {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
+  const { content } = useContent();
   const [lang, setLangState] = useState<Lang>(getInitialLang);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (ogTitle) ogTitle.setAttribute("content", content[lang].meta.ogTitle);
     const ogLocale = document.querySelector('meta[property="og:locale"]');
     if (ogLocale) ogLocale.setAttribute("content", lang === "ar" ? "ar_TN" : "fr_TN");
-  }, [lang]);
+  }, [content, lang]);
 
   const setLang = (next: Lang) => {
     setLangState((prev) => {

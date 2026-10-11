@@ -1,6 +1,6 @@
 import { useLang } from "../i18n/LanguageContext";
 import { cn } from "../utils/cn";
-import { ArrowFwd, Reveal, SectionHeading, SpotlightCard } from "./ui";
+import { ArrowFwd, ContentIcon, Reveal, SectionHeading, SpotlightCard } from "./ui";
 
 interface ExpertiseProps {
   onRequest: (interest: string) => void;
@@ -34,7 +34,6 @@ export default function Expertise({ onRequest }: ExpertiseProps) {
 
         <div className="mt-12 grid gap-5 sm:mt-14 md:grid-cols-2 lg:grid-cols-3">
           {s.domains.map((domain, index) => {
-            const Icon = domain.icon;
             return (
               <Reveal
                 key={domain.title}
@@ -43,8 +42,8 @@ export default function Expertise({ onRequest }: ExpertiseProps) {
               >
                 <SpotlightCard className="h-full p-6 sm:p-7 lg:p-8">
                   {domain.featured && (
-                    <Icon
-                      aria-hidden="true"
+                    <ContentIcon
+                      name={domain.icon}
                       strokeWidth={1.2}
                       className="pointer-events-none absolute -bottom-12 -end-12 h-52 w-52 text-brand-50 transition-transform duration-700 group-hover:-rotate-12 group-hover:scale-110"
                     />
@@ -52,7 +51,7 @@ export default function Expertise({ onRequest }: ExpertiseProps) {
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-4">
                       <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 transition-all duration-500 group-hover:-rotate-6 group-hover:bg-sun-400 group-hover:text-brand-950 group-hover:ring-sun-300">
-                        <Icon className="h-7 w-7" aria-hidden="true" />
+                        <ContentIcon name={domain.icon} className="h-7 w-7" />
                       </span>
                       {domain.badge && (
                         <span className="shrink-0 rounded-full bg-sun-100 px-3 py-1 text-xs font-bold text-brand-950 ring-1 ring-sun-200">

@@ -1,7 +1,9 @@
-import { ArrowUp, Mail, MapPin, Phone } from "lucide-react";
-import { contact } from "../constants/content";
+import { ArrowUp, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { contact, telHref } from "../constants/content";
 import { useLang } from "../i18n/LanguageContext";
-import { FacebookIcon, Logo } from "./ui";
+import { BUILD_LABEL } from "../constants/buildInfo";
+import { ADMIN_PATH } from "../store";
+import { ArrowFwd, FacebookIcon, Logo } from "./ui";
 
 export default function Footer() {
   const { t } = useLang();
@@ -71,17 +73,17 @@ export default function Footer() {
                   {contact.email}
                 </a>
               </li>
-              {contact.phone && (
-                <li>
+              {contact.phones.map((number) => (
+                <li key={number}>
                   <a
-                    href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                    href={telHref(number)}
                     className="flex items-start gap-2.5 transition-colors hover:text-brand-600"
                   >
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />
-                    <span dir="ltr">{contact.phone}</span>
+                    <span dir="ltr">{number}</span>
                   </a>
                 </li>
-              )}
+              ))}
             </ul>
           </div>
         </div>
@@ -89,6 +91,9 @@ export default function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-brand-100 pt-8 sm:mt-14 sm:flex-row">
           <p className="text-center text-sm text-slate-500 sm:text-start">
             {t.footer.copyright.replace("{year}", String(year))}
+            <span className="ms-2 align-middle text-[10px] font-semibold text-slate-300" title="Identifiant de build">
+              build {BUILD_LABEL}
+            </span>
           </p>
           <a
             href="#top"
@@ -100,6 +105,20 @@ export default function Footer() {
             </span>
           </a>
         </div>
+
+        {/* Accès administrateur : visible uniquement si VITE_ADMIN_PATH est défini. */}
+        {ADMIN_PATH && (
+          <div className="mt-8 flex justify-center border-t border-brand-100 pt-8">
+            <a
+              href={`#/${ADMIN_PATH}`}
+              className="group inline-flex items-center gap-2 rounded-full bg-brand-950 px-5 py-2.5 text-sm font-bold text-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+            >
+              <ShieldCheck className="h-4 w-4 text-sun-400" aria-hidden="true" />
+              Administration
+              <ArrowFwd className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:-scale-x-100" />
+            </a>
+          </div>
+        )}
       </div>
     </footer>
   );

@@ -240,16 +240,18 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
   const active = SECTIONS.find((item) => item.id === section);
 
   return (
-    <div className="relative flex min-h-screen overflow-x-clip bg-white text-brand-950" dir="ltr">
-      {/* Décor du héro : trame + halos bleu/jaune */}
-      <div aria-hidden="true" className="bg-grid pointer-events-none absolute inset-0" />
+    <div className="relative isolate flex min-h-screen overflow-x-clip bg-white text-brand-950" dir="ltr">
+      {/* Décor du héro : trame + halos bleu/jaune — toujours DERRIÈRE le contenu
+          (isolate + -z-10 : l'ordre de peinture CSS sinon fait passer les absolus
+          positionnés devant le texte statique). */}
+      <div aria-hidden="true" className="bg-grid pointer-events-none absolute inset-0 -z-10" />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 -start-40 h-[28rem] w-[28rem] rounded-full bg-brand-200/50 blur-3xl"
+        className="pointer-events-none absolute -top-40 -start-40 -z-10 h-[28rem] w-[28rem] rounded-full bg-brand-200/50 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-24 end-0 h-[26rem] w-[26rem] rounded-full bg-sun-200/60 blur-3xl"
+        className="pointer-events-none absolute -top-24 end-0 -z-10 h-[26rem] w-[26rem] rounded-full bg-sun-200/50 blur-3xl"
       />
 
       {/* ── Barre latérale claire (verre dépoli, comme la navbar) ── */}
@@ -366,7 +368,7 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
               <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-brand-950 sm:text-5xl">
                 <Marker>{active?.label}</Marker>
               </h1>
-              <p className="mt-2.5 text-base text-slate-500">
+              <p className="mt-2.5 text-base text-slate-600">
                 Contenu {lang === "fr" ? "français" : "arabe"} · les changements ne sont visibles qu'après « Publier ».
               </p>
             </div>

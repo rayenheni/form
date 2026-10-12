@@ -720,12 +720,14 @@ export function HeroEditor(props: EditorProps) {
           <h3 className="font-display text-lg font-extrabold text-slate-900">Bandeau de confiance — atouts</h3>
           {trust.highlights.map((item, index) => (
             <div key={index} className="rounded-xl border border-slate-200 bg-white p-3">
-              <div className="flex items-start gap-2">
-                <div className="flex-1 space-y-2">
+              <div className="grid grid-cols-[1fr_auto_auto] items-start gap-2">
+                <div className="min-w-0 space-y-2">
                   <TextInput value={item.title} dir={dir} onChange={(v) => highlights.update(index, { title: v })} />
                   <TextArea rows={2} value={item.description} dir={dir} onChange={(v) => highlights.update(index, { description: v })} />
                 </div>
-                <IconPicker value={item.icon} onChange={(v) => highlights.update(index, { icon: v })} />
+                <div className="w-40">
+                  <IconPicker value={item.icon} onChange={(v) => highlights.update(index, { icon: v })} />
+                </div>
                 <button
                   type="button"
                   onClick={() => highlights.remove(index)}

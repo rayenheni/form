@@ -6,6 +6,7 @@ import {
   FileText,
   Globe,
   History,
+  Inbox,
   LayoutGrid,
   LogOut,
   MessagesSquare,
@@ -26,6 +27,7 @@ import { cn } from "../utils/cn";
 import { Marker } from "../components/ui";
 import AdminGate from "./AdminGate";
 import Dashboard from "./Dashboard";
+import ReservationsPanel from "./ReservationsPanel";
 import type { EditorProps } from "./editors";
 import {
   BenefitsEditor,
@@ -41,6 +43,7 @@ import {
 
 type SectionId =
   | "dashboard"
+  | "reservations"
   | "formations"
   | "programs"
   | "hero"
@@ -61,7 +64,8 @@ interface Section {
 }
 
 const SECTIONS: Section[] = [
-  { id: "dashboard", label: "Tableau de bord", hint: "Trafic, sources et réservations", icon: BarChart3 },
+  { id: "dashboard", label: "Tableau de bord", hint: "Trafic, sources et conversion", icon: BarChart3 },
+  { id: "reservations", label: "Réservations", hint: "Demandes reçues et suivi", icon: Inbox },
   { id: "formations", label: "Cours", hint: "Ajouter, modifier ou retirer un cours", icon: LayoutGrid, render: (p) => <FormationsEditor {...p} /> },
   { id: "programs", label: "Programmes phares", hint: "Onglets détaillés", icon: Rocket, render: (p) => <ProgramsEditor {...p} /> },
   { id: "hero", label: "Page d'accueil", hint: "Héro, atouts, publics", icon: Star, render: (p) => <HeroEditor {...p} /> },
@@ -374,8 +378,8 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
             )}
           </div>
 
-          {/* Barre d'actions (verre dépoli, collante) — absente du tableau de bord, en lecture seule */}
-          {section !== "dashboard" && (
+          {/* Barre d'actions (verre dépoli, collante) — absente des écrans de données, en lecture seule */}
+          {section !== "dashboard" && section !== "reservations" && (
           <div className="glass sticky top-4 z-20 mb-6 flex flex-wrap items-center gap-2.5 rounded-2xl p-3.5">
             <button
               type="button"
@@ -433,6 +437,8 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
 
           {section === "dashboard" ? (
             <Dashboard />
+          ) : section === "reservations" ? (
+            <ReservationsPanel />
           ) : loading || !content ? (
             <p className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
               Chargement du contenu…

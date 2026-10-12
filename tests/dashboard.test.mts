@@ -68,6 +68,7 @@ const React = await import("react");
 const { act } = await import("react");
 const { createRoot } = await import("react-dom/client");
 const { default: Dashboard } = await import("../src/admin/Dashboard");
+const { default: ReservationsPanel } = await import("../src/admin/ReservationsPanel");
 const { createLocalAnalyticsStore, setAnalyticsStore } = await import("../src/store/analytics");
 const { memoryKv } = await import("../src/store/localStore");
 
@@ -344,6 +345,55 @@ await test("Collecte : naviguer vers une autre section enregistre une nouvelle v
   await act(async () => {
     root.unmount();
   });
+});
+
+/* ─────────────── Page « Réservations » ─────────────── */
+
+/** Monte la page Réservations, laisse les effets aboutir, renvoie le HTML. */
+async function renderReservations(): Promise<string> {
+  const container = window.document.getElementById("root");
+  assert.ok(container, "conteneur #root absent");
+  container.innerHTML = "";
+
+  const root: Root = createRoot(container as unknown as Parameters<typeof createRoot>[0]);
+  await act(async () => {
+    root.render(React.createElement(ReservationsPanel));
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  const html = container.innerHTML;
+  await act(async () => {
+    root.unmount();
+  });
+  return html;
+}
+
+await test("Page Réservations : liste les demandes avec auteur, coordonnées et sujet", async () => {
+  await seedKnownData();
+  const html = await renderReservations();
+  assert.ok(!html.includes("Chargement des demandes"), "encore en état de chargement");
+  assert.ok(html.includes("Amina Test"), "nom absent");
+  assert.ok(html.includes("amina@example.tn"), "e-mail absent");
+  assert.ok(html.includes("+216 94 825 735"), "téléphone absent");
+  assert.ok(html.includes("Droit des affaires"), "sujet absent");
+  assert.ok(html.includes("Nouvelle"), "statut initial absent");
+});
+
+await test("Page Réservations : propose les actions de statut et l'export CSV", async () => {
+  await seedKnownData();
+  const html = await renderReservations();
+  assert.ok(html.includes("Contactée"), "action « Contactée » absente");
+  assert.ok(html.includes("Réservée"), "action « Réservée » absente");
+  assert.ok(html.includes("Exporter CSV"), "bouton d'export absent");
+  assert.ok(html.includes("Toutes"), "filtre « Toutes » absent");
+});
+
+await test("Page Réservations : sans donnée, l'écran vide s'affiche", async () => {
+  setAnalyticsStore(createLocalAnalyticsStore(memoryKv()));
+  const html = await renderReservations();
+  assert.ok(!html.includes("Chargement des demandes"), "encore en état de chargement");
+  assert.ok(html.includes("Aucune demande pour l"), "état vide absent");
 });
 
 setAnalyticsStore(null);

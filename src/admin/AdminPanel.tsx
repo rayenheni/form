@@ -347,7 +347,7 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
               )}
               aria-hidden="true"
             />
-            {isSupabaseConfigured() ? "connecté à Supabase" : "mode local (ce navigateur)"}
+            {isSupabaseConfigured() ? "En ligne" : "Brouillon local"}
           </p>
         </div>
       </aside>
@@ -427,13 +427,6 @@ function AdminWorkspace({ user, onSignOut }: { user: AdminUser; onSignOut: () =>
               )}
             >
               {status.label}
-            </p>
-          )}
-
-          {!isSupabaseConfigured() && (
-            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              Mode local : les publications restent dans ce navigateur. Configurez Supabase (<code>ADMIN.md</code>) pour
-              que le site public affiche vos modifications partout.
             </p>
           )}
 

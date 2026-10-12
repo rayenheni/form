@@ -10,7 +10,6 @@ import {
   type ReservationStatus,
 } from "../lib/analytics";
 import { getAnalyticsStore } from "../store/analytics";
-import { isSupabaseConfigured } from "../store/supabaseClient";
 import { cn } from "../utils/cn";
 
 /* ══════════════════════════════════════════════════════════════
@@ -199,13 +198,6 @@ export default function ReservationsPanel() {
           </ul>
         )}
       </section>
-
-      {!isSupabaseConfigured() && (
-        <p className="rounded-xl border border-sun-200 bg-sun-50 px-4 py-3 text-xs font-semibold text-sun-800">
-          Mode démonstration : les demandes proviennent de ce navigateur uniquement. Configurez Supabase pour
-          recevoir les demandes de tous les visiteurs.
-        </p>
-      )}
     </div>
   );
 }

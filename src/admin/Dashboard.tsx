@@ -21,7 +21,6 @@ import {
   type Reservation,
 } from "../lib/analytics";
 import { getAnalyticsStore } from "../store/analytics";
-import { isSupabaseConfigured } from "../store/supabaseClient";
 import { cn } from "../utils/cn";
 import ReservationsPanel from "./ReservationsPanel";
 
@@ -287,14 +286,6 @@ export default function Dashboard() {
 
       {/* ── Réservations (page dédiée embarquée) ── */}
       <ReservationsPanel />
-
-      {!isSupabaseConfigured() && (
-        <p className="rounded-xl border border-sun-200 bg-sun-50 px-4 py-3 text-xs font-semibold text-sun-800">
-          Mode démonstration : les statistiques proviennent de ce navigateur uniquement. Configurez Supabase
-          (<code className="font-mono">VITE_SUPABASE_URL</code> et <code className="font-mono">VITE_SUPABASE_ANON_KEY</code>)
-          pour agréger les visites de tous les visiteurs.
-        </p>
-      )}
     </div>
   );
 }

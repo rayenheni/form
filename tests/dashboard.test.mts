@@ -167,10 +167,11 @@ await test("Tableau de bord : la demande apparaît avec son auteur et ses coordo
   assert.ok(html.includes("Nouvelle"), "statut initial absent");
 });
 
-await test("Tableau de bord : le bandeau « mode démonstration » s'affiche sans Supabase", async () => {
+await test("Tableau de bord : aucun message technique « mode démonstration » n'est affiché", async () => {
   await seedKnownData();
   const html = await renderDashboard();
-  assert.ok(html.includes("Mode démonstration"), "bandeau d'avertissement absent");
+  assert.ok(!html.includes("Mode démonstration"), "bandeau technique visible dans l'interface");
+  assert.ok(!html.includes("VITE_SUPABASE"), "variable d'environnement visible dans l'interface");
 });
 
 await test("Tableau de bord : sans donnée, l'écran vide s'affiche", async () => {

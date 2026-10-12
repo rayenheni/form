@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Eye, EyeOff, KeyRound, ShieldAlert } from "lucide-react";
+import { Eye, EyeOff, KeyRound } from "lucide-react";
 import type { AdminSession, AdminUser } from "../store/adminSession";
-import { isSupabaseConfigured } from "../store/supabaseClient";
 
 interface GateProps {
   session: AdminSession;
@@ -135,16 +134,6 @@ export default function AdminGate({ session, onSignedIn }: GateProps) {
           </button>
         </form>
 
-        {!isSupabaseConfigured() && (
-          <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-800">
-            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-            <span>
-              <strong>Mode local.</strong> Supabase n'est pas configuré : le contenu est enregistré dans ce navigateur
-              uniquement (rien n'est partagé). Renseignez <code>VITE_SUPABASE_URL</code> et{" "}
-              <code>VITE_SUPABASE_ANON_KEY</code> pour publier réellement — voir <code>ADMIN.md</code>.
-            </span>
-          </p>
-        )}
       </div>
     </div>
   );

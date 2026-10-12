@@ -124,7 +124,8 @@ await test("Porte d'entrée : sans administrateur local, l'écran de création s
   );
   assert.ok(html.includes("\"new-password\""), "écran de création absent (pas de nouveau mot de passe)");
   assert.ok(html.includes("Confirmer le mot de passe"), "champ de confirmation absent");
-  assert.ok(html.includes("Mode local"), "avertissement mode local absent");
+  assert.ok(!html.includes("Mode local"), "message technique « Mode local » visible dans l'interface");
+  assert.ok(!html.includes("ADMIN.md"), "référence technique visible dans l'interface");
 });
 
 await test("Porte d'entrée : après création, l'écran de connexion s'affiche", async () => {

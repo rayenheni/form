@@ -1,6 +1,7 @@
 import { ArrowUp, Mail, MapPin, Phone } from "lucide-react";
-import { contact } from "../constants/content";
+import { contact, telHref } from "../constants/content";
 import { useLang } from "../i18n/LanguageContext";
+import { BUILD_LABEL } from "../constants/buildInfo";
 import { FacebookIcon, Logo } from "./ui";
 
 export default function Footer() {
@@ -71,17 +72,17 @@ export default function Footer() {
                   {contact.email}
                 </a>
               </li>
-              {contact.phone && (
-                <li>
+              {contact.phones.map((number) => (
+                <li key={number}>
                   <a
-                    href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                    href={telHref(number)}
                     className="flex items-start gap-2.5 transition-colors hover:text-brand-600"
                   >
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />
-                    <span dir="ltr">{contact.phone}</span>
+                    <span dir="ltr">{number}</span>
                   </a>
                 </li>
-              )}
+              ))}
             </ul>
           </div>
         </div>
@@ -89,6 +90,9 @@ export default function Footer() {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-brand-100 pt-8 sm:mt-14 sm:flex-row">
           <p className="text-center text-sm text-slate-500 sm:text-start">
             {t.footer.copyright.replace("{year}", String(year))}
+            <span className="ms-2 align-middle text-[10px] font-semibold text-slate-300" title="Identifiant de build">
+              build {BUILD_LABEL}
+            </span>
           </p>
           <a
             href="#top"
@@ -100,6 +104,7 @@ export default function Footer() {
             </span>
           </a>
         </div>
+
       </div>
     </footer>
   );

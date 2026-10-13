@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Target } from "lucide-react";
 import { useLang } from "../i18n/LanguageContext";
-import { Marker, Reveal, SectionHeading, ease } from "./ui";
+import { ContentIcon, Marker, Reveal, SectionHeading, ease } from "./ui";
 
 const BENEFITS_IMAGE =
   "https://images.pexels.com/photos/4049875/pexels-photo-4049875.jpeg?auto=compress&cs=tinysrgb&w=1200";
@@ -60,11 +60,11 @@ export default function Benefits() {
           />
 
           <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
-            {s.items.map(({ icon: Icon, title, description }, index) => (
+            {s.items.map(({ icon, title, description }, index) => (
               <Reveal key={title} delay={index * 0.08} className="h-full">
                 <div className="group h-full rounded-2xl border border-brand-100 bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-sun-300 hover:shadow-card-hover sm:p-6">
                   <span className="grid h-11 w-11 place-items-center rounded-xl bg-sun-100 text-brand-700 transition-all duration-300 group-hover:-rotate-6 group-hover:bg-sun-400 group-hover:text-brand-950">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                    <ContentIcon name={icon} className="h-5 w-5" />
                   </span>
                   <h3 className="mt-4 font-display text-lg font-bold text-brand-950">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>

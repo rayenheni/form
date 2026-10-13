@@ -3,3 +3,5 @@ dist/
 .netlify/
 .env*.local
 *.log
+tests/.tmp/
+scripts/.tmp/

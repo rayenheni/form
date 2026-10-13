@@ -12,11 +12,18 @@ import News from "./components/News";
 import Pricing from "./components/Pricing";
 import Showcase from "./components/Showcase";
 import TrustBar from "./components/TrustBar";
+import AdminPanel from "./admin/AdminPanel";
+import { ContentProvider } from "./i18n/ContentProvider";
 import { LanguageProvider, useLang } from "./i18n/LanguageContext";
+import { ADMIN_IS_DEFAULT, isAdminRoute } from "./store";
+import { usePageviewTracking } from "./lib/tracking";
 
 function Site() {
   const { t, lang } = useLang();
   const [interest, setInterest] = useState("");
+
+  /* Alimente le tableau de bord de l'administration (visites et sources). */
+  usePageviewTracking(lang);
 
   // La sélection du formulaire dépend de la langue : on la réinitialise au changement.
   useEffect(() => {
@@ -65,12 +72,36 @@ function Site() {
   );
 }
 
-export default function App() {
+/**
+ * Aiguillage : l'administration vit sur `…/#/<chemin secret>` (voir VITE_ADMIN_PATH).
+ * Tout le reste affiche le site public.
+ */
+function Shell() {
+  const [admin, setAdmin] = useState(() =>
+    isAdminRoute(window.location, { adminIsDefault: ADMIN_IS_DEFAULT })
+  );
+
+  useEffect(() => {
+    const sync = () => setAdmin(isAdminRoute(window.location, { adminIsDefault: ADMIN_IS_DEFAULT }));
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  if (admin) return <AdminPanel />;
+
   return (
-    <MotionConfig reducedMotion="user">
+    <ContentProvider>
       <LanguageProvider>
         <Site />
       </LanguageProvider>
+    </ContentProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <MotionConfig reducedMotion="user">
+      <Shell />
     </MotionConfig>
   );
 }

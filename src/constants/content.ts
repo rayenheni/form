@@ -1,36 +1,26 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  Briefcase,
-  Building,
-  Compass,
-  GraduationCap,
-  Landmark,
-  Laptop,
-  Layers,
-  MapPin,
-  MessageSquare,
-  Receipt,
-  Rocket,
-  Scale,
-  ShieldCheck,
-  Target,
-  Users,
-} from "lucide-react";
+import { type IconName } from "./icons";
 
 export type Lang = "fr" | "ar";
 
 /* ──────────────────────────────────────────────────────────────
- * Coordonnées — ⚠️ à vérifier avant la mise en ligne
+ * Coordonnées — communiquées par le centre (mobiles + e-mail).
+ * ⚠️ reste à confirmer : l'URL exacte de la page Facebook.
  * ────────────────────────────────────────────────────────────── */
 export const contact = {
   name: "Forma Business Lex",
-  /** À CONFIRMER : adresse e-mail réelle du centre. */
-  email: "contact@formabusinesslex.tn",
-  /** Laisser vide pour masquer le téléphone. Exemple : "+216 71 000 000". */
-  phone: "",
+  /** Adresse e-mail du centre (utilisée par le formulaire de contact). */
+  email: "forma.business.lex2025@gmail.com",
+  /** Téléphones portables affichés sur le site (le 1er = numéro principal / WhatsApp). */
+  phone: "+216 94 825 735",
+  phones: ["+216 94 825 735", "+216 23 691 946"],
+  /** Lien WhatsApp direct vers le numéro principal (sans le préfixe +). */
+  whatsapp: "https://wa.me/21694825735",
   /** À REMPLACER par l'URL exacte de la page Facebook. */
   facebook: "https://www.facebook.com/search/top?q=Forma%20Business%20Lex",
 };
+
+/** Numéro au format `tel:` (espaces retirés) : « +216 94 825 735 » → « tel:+21694825735 ». */
+export const telHref = (value: string) => `tel:${value.replace(/\s/g, "")}`;
 
 /* ───────────────────────── Types ───────────────────────── */
 export interface NavLink {
@@ -39,13 +29,13 @@ export interface NavLink {
 }
 
 export interface Highlight {
-  icon: LucideIcon;
+  icon: IconName;
   title: string;
   description: string;
 }
 
 export interface Domain {
-  icon: LucideIcon;
+  icon: IconName;
   title: string;
   description: string;
   tags: string[];
@@ -57,7 +47,7 @@ export interface Domain {
 export interface FeaturedProgram {
   id: string;
   tab: string;
-  icon: LucideIcon;
+  icon: IconName;
   title: string;
   description: string;
   audience: string;
@@ -67,7 +57,7 @@ export interface FeaturedProgram {
 }
 
 export interface Benefit {
-  icon: LucideIcon;
+  icon: IconName;
   title: string;
   description: string;
 }
@@ -80,7 +70,7 @@ export interface Post {
 }
 
 export interface Offer {
-  icon: LucideIcon;
+  icon: IconName;
   name: string;
   tagline: string;
   price: string;
@@ -122,7 +112,7 @@ export interface SiteContent {
     enaTitle: string;
     enaSubtitle: string;
     domainsLabel: string;
-    heroDomains: { icon: LucideIcon; label: string }[];
+    heroDomains: { icon: IconName; label: string }[];
   };
   trust: {
     ariaLabel: string;
@@ -194,6 +184,7 @@ export interface SiteContent {
     titleAccent: string;
     desc: string;
     fbLabel: string;
+    waLabel: string;
     address: string;
     reassurances: string[];
     formTitle: string;
@@ -276,20 +267,20 @@ const fr: SiteContent = {
     enaSubtitle: "Révision en ligne",
     domainsLabel: "Nos domaines",
     heroDomains: [
-      { icon: Scale, label: "Droit des affaires" },
-      { icon: Receipt, label: "Fiscalité" },
-      { icon: Landmark, label: "Marchés publics" },
-      { icon: ShieldCheck, label: "Conformité" },
+      { icon: "Scale", label: "Droit des affaires" },
+      { icon: "Receipt", label: "Fiscalité" },
+      { icon: "Landmark", label: "Marchés publics" },
+      { icon: "ShieldCheck", label: "Conformité" },
     ],
   },
   trust: {
     ariaLabel: "Points clés",
     audiencesLabel: "Des formations conçues pour",
     highlights: [
-      { icon: MapPin, title: "Basé à Tunis", description: "Un centre de formation implanté à Tunis 2066." },
-      { icon: Laptop, title: "Formation en ligne", description: "Des sessions accessibles depuis toute la Tunisie." },
-      { icon: GraduationCap, title: "Concours ENA", description: "Une préparation structurée, en révision en ligne." },
-      { icon: Layers, title: "Offre complète", description: "Du droit des affaires à la conformité." },
+      { icon: "MapPin", title: "Basé à Tunis", description: "Un centre de formation implanté à Tunis 2066." },
+      { icon: "Laptop", title: "Formation en ligne", description: "Des sessions accessibles depuis toute la Tunisie." },
+      { icon: "GraduationCap", title: "Concours ENA", description: "Une préparation structurée, en révision en ligne." },
+      { icon: "Layers", title: "Offre complète", description: "Du droit des affaires à la conformité." },
     ],
     audiences: [
       "Dirigeants de PME",
@@ -312,7 +303,7 @@ const fr: SiteContent = {
     cta: "Demander le programme",
     domains: [
       {
-        icon: Scale,
+        icon: "Scale",
         title: "Droit des affaires",
         description:
           "Contrats commerciaux, droit des sociétés, prévention des litiges : sécurisez chaque engagement de votre entreprise.",
@@ -321,21 +312,21 @@ const fr: SiteContent = {
         featured: true,
       },
       {
-        icon: Receipt,
+        icon: "Receipt",
         title: "Fiscalité",
         description: "Comprenez vos obligations, anticipez les contrôles et prenez des décisions fiscales éclairées.",
         tags: ["Obligations fiscales", "Contrôle fiscal"],
         interest: "Fiscalité",
       },
       {
-        icon: Landmark,
+        icon: "Landmark",
         title: "Marchés publics",
         description: "Analysez un appel d'offres, construisez une offre solide et maîtrisez l'exécution du marché.",
         tags: ["Appels d'offres", "TUNEPS", "Exécution"],
         interest: "Marchés publics",
       },
       {
-        icon: ShieldCheck,
+        icon: "ShieldCheck",
         title: "Gouvernance & conformité",
         description:
           "Instaurez des règles claires, protégez vos dirigeants et prévenez les risques de non-conformité.",
@@ -344,14 +335,14 @@ const fr: SiteContent = {
         featured: true,
       },
       {
-        icon: Users,
+        icon: "Users",
         title: "Droit du travail",
         description: "Contrat, discipline, rupture : sécurisez la relation de travail et prévenez les conflits.",
         tags: ["Contrat de travail", "Conflits"],
         interest: "Droit du travail",
       },
       {
-        icon: Rocket,
+        icon: "Rocket",
         title: "Création d'entreprise",
         description:
           "Choisissez votre forme juridique, accomplissez les formalités et lancez-vous sur de bonnes bases.",
@@ -360,12 +351,40 @@ const fr: SiteContent = {
         badge: "En ligne",
       },
       {
-        icon: GraduationCap,
+        icon: "GraduationCap",
         title: "Concours ENA",
         description: "Révisions, méthodologie et entraînement pour aborder les épreuves avec confiance.",
         tags: ["Révision", "Méthodologie"],
         interest: "Concours ENA",
         badge: "En ligne",
+      },
+      {
+        icon: "Laptop",
+        title: "Excel",
+        description: "Formules, tableaux croisés dynamiques et tableaux de bord : gagnez en productivité au quotidien.",
+        tags: ["Formules", "TCD", "Tableaux de bord"],
+        interest: "Excel",
+      },
+      {
+        icon: "Sparkles",
+        title: "Intelligence artificielle (IA)",
+        description: "Apprivoisez les outils d'IA pour automatiser vos tâches et prendre de meilleures décisions.",
+        tags: ["Outils IA", "Automatisation", "Productivité"],
+        interest: "IA",
+      },
+      {
+        icon: "Users",
+        title: "Ressources humaines",
+        description: "Recrutement, paie, administration du personnel et développement des compétences.",
+        tags: ["Recrutement", "Paie", "Compétences"],
+        interest: "Ressources humaines",
+      },
+      {
+        icon: "Briefcase",
+        title: "Conseiller fiscal",
+        description: "Devenez l'interlocuteur de référence en fiscalité : conseil, conformité et optimisation.",
+        tags: ["Conseil", "Conformité", "Optimisation"],
+        interest: "Conseiller fiscal",
       },
     ],
   },
@@ -383,7 +402,7 @@ const fr: SiteContent = {
       {
         id: "ena",
         tab: "Concours ENA",
-        icon: GraduationCap,
+        icon: "GraduationCap",
         title: "Préparation au concours ENA — révision en ligne",
         description:
           "Un programme de révision structuré pour revoir l'essentiel, travailler la méthode et s'entraîner aux épreuves, depuis chez vous.",
@@ -401,7 +420,7 @@ const fr: SiteContent = {
       {
         id: "travail",
         tab: "Droit du travail",
-        icon: Users,
+        icon: "Users",
         title: "Maîtrisez le droit du travail et sécurisez durablement vos équipes",
         description:
           "Du recrutement à la rupture du contrat, apprenez à sécuriser chaque étape de la relation de travail et à prévenir les conflits professionnels.",
@@ -418,7 +437,7 @@ const fr: SiteContent = {
       {
         id: "creation",
         tab: "Création d'entreprise",
-        icon: Rocket,
+        icon: "Rocket",
         title: "Entreprendre avec succès : les clés pour créer votre entreprise",
         description:
           "Vous avez un projet d'entreprise ? Structurez-le sur des bases juridiques et fiscales solides, de l'idée jusqu'au lancement.",
@@ -444,22 +463,22 @@ const fr: SiteContent = {
     overlayDesc: "Le droit au service de vos décisions",
     items: [
       {
-        icon: Target,
+        icon: "Target",
         title: "Pratique avant tout",
         description: "Des cas concrets et des outils directement applicables à votre quotidien professionnel.",
       },
       {
-        icon: Compass,
+        icon: "Compass",
         title: "Vision stratégique",
         description: "Comprendre les règles, mais surtout savoir les utiliser pour décider et anticiper.",
       },
       {
-        icon: Laptop,
+        icon: "Laptop",
         title: "Formation en ligne",
         description: "Formez-vous où que vous soyez en Tunisie, sans contrainte de déplacement.",
       },
       {
-        icon: MessageSquare,
+        icon: "MessageSquare",
         title: "Conseil personnalisé",
         description: "Un conseiller vous oriente vers le parcours adapté à votre profil et à vos objectifs.",
       },
@@ -510,7 +529,7 @@ const fr: SiteContent = {
     footnote: "Particuliers, entreprises et institutions : chaque proposition est établie selon vos objectifs.",
     offers: [
       {
-        icon: Briefcase,
+        icon: "Briefcase",
         name: "Formation individuelle",
         tagline: "Pour monter en compétences sur un domaine précis.",
         price: "Sur devis",
@@ -525,7 +544,7 @@ const fr: SiteContent = {
         interest: "Formation individuelle",
       },
       {
-        icon: GraduationCap,
+        icon: "GraduationCap",
         name: "Préparation concours ENA",
         tagline: "Une révision structurée pour aborder les épreuves avec méthode.",
         price: "Sur devis",
@@ -541,7 +560,7 @@ const fr: SiteContent = {
         highlighted: true,
       },
       {
-        icon: Building,
+        icon: "Building",
         name: "Entreprises & institutions",
         tagline: "Un programme construit autour des enjeux de vos équipes.",
         price: "Sur mesure",
@@ -601,6 +620,7 @@ const fr: SiteContent = {
     titleAccent: "projet de formation",
     desc: "Dites-nous ce que vous souhaitez apprendre. Un conseiller vous recontacte pour vous orienter vers le bon parcours et vous communiquer les tarifs et les prochaines dates.",
     fbLabel: "Forma Business Lex sur Facebook",
+    waLabel: "Écrire sur WhatsApp",
     address: "Tunis 2066, Tunisie",
     reassurances: ["Sans engagement", "Conseil personnalisé", "Réponse par e-mail ou téléphone"],
     formTitle: "Demande d'information",
@@ -700,20 +720,20 @@ const ar: SiteContent = {
     enaSubtitle: "مراجعة عن بُعد",
     domainsLabel: "مجالاتنا",
     heroDomains: [
-      { icon: Scale, label: "قانون الأعمال" },
-      { icon: Receipt, label: "الجباية" },
-      { icon: Landmark, label: "الصفقات العمومية" },
-      { icon: ShieldCheck, label: "الامتثال" },
+      { icon: "Scale", label: "قانون الأعمال" },
+      { icon: "Receipt", label: "الجباية" },
+      { icon: "Landmark", label: "الصفقات العمومية" },
+      { icon: "ShieldCheck", label: "الامتثال" },
     ],
   },
   trust: {
     ariaLabel: "نقاط أساسية",
     audiencesLabel: "تكوينات موجهة إلى",
     highlights: [
-      { icon: MapPin, title: "مقرّنا في تونس", description: "مركز تكوين في تونس 2066." },
-      { icon: Laptop, title: "تكوين عن بُعد", description: "حصص متاحة من كل أنحاء تونس." },
-      { icon: GraduationCap, title: "مناظرة ENA", description: "تحضير منهجي مع مراجعة عن بُعد." },
-      { icon: Layers, title: "عرض شامل", description: "من قانون الأعمال إلى الامتثال." },
+      { icon: "MapPin", title: "مقرّنا في تونس", description: "مركز تكوين في تونس 2066." },
+      { icon: "Laptop", title: "تكوين عن بُعد", description: "حصص متاحة من كل أنحاء تونس." },
+      { icon: "GraduationCap", title: "مناظرة ENA", description: "تحضير منهجي مع مراجعة عن بُعد." },
+      { icon: "Layers", title: "عرض شامل", description: "من قانون الأعمال إلى الامتثال." },
     ],
     audiences: [
       "مسيّرو المؤسسات الصغرى والمتوسطة",
@@ -736,7 +756,7 @@ const ar: SiteContent = {
     cta: "اطلب البرنامج",
     domains: [
       {
-        icon: Scale,
+        icon: "Scale",
         title: "قانون الأعمال",
         description: "العقود التجارية وقانون الشركات والوقاية من النزاعات: أمّنوا كل التزامات مؤسستكم.",
         tags: ["العقود", "الشركات", "النزاعات"],
@@ -744,21 +764,21 @@ const ar: SiteContent = {
         featured: true,
       },
       {
-        icon: Receipt,
+        icon: "Receipt",
         title: "الجباية",
         description: "افهموا واجباتكم وتوقعوا المراقبة واتخذوا قرارات جبائية سليمة.",
         tags: ["الواجبات الجبائية", "المراقبة الجبائية"],
         interest: "الجباية",
       },
       {
-        icon: Landmark,
+        icon: "Landmark",
         title: "الصفقات العمومية",
         description: "حلّلوا طلب العروض وابنوا عرضًا متينًا وأتقنوا تنفيذ الصفقة.",
         tags: ["طلبات العروض", "منظومة TUNEPS", "التنفيذ"],
         interest: "الصفقات العمومية",
       },
       {
-        icon: ShieldCheck,
+        icon: "ShieldCheck",
         title: "الحوكمة والامتثال",
         description: "ضعوا قواعد واضحة واحموا مسيّريكم وتوقّوا مخاطر عدم الامتثال.",
         tags: ["الحوكمة", "المعطيات الشخصية", "مكافحة الفساد"],
@@ -766,14 +786,14 @@ const ar: SiteContent = {
         featured: true,
       },
       {
-        icon: Users,
+        icon: "Users",
         title: "قانون الشغل",
         description: "العقد والتأديب وإنهاء العلاقة: أمّنوا علاقة الشغل وتوقّوا النزاعات.",
         tags: ["عقد الشغل", "النزاعات"],
         interest: "قانون الشغل",
       },
       {
-        icon: Rocket,
+        icon: "Rocket",
         title: "إحداث المؤسسات",
         description: "اختاروا الشكل القانوني وأتمّوا الإجراءات وانطلقوا على أسس متينة.",
         tags: ["القوانين الأساسية", "الإجراءات"],
@@ -781,12 +801,40 @@ const ar: SiteContent = {
         badge: "عن بُعد",
       },
       {
-        icon: GraduationCap,
+        icon: "GraduationCap",
         title: "مناظرة ENA",
         description: "مراجعة ومنهجية وتدريب لاجتياز الاختبارات بثقة.",
         tags: ["المراجعة", "المنهجية"],
         interest: "مناظرة ENA",
         badge: "عن بُعد",
+      },
+      {
+        icon: "Laptop",
+        title: "إكسل",
+        description: "الصيغ والجداول المحورية ولوحات المتابعة: ارفعوا إنتاجيتكم اليومية.",
+        tags: ["صيغ", "جداول محورية", "لوحات متابعة"],
+        interest: "إكسل",
+      },
+      {
+        icon: "Sparkles",
+        title: "الذكاء الاصطناعي",
+        description: "تدرّبوا على أدوات الذكاء الاصطناعي لأتمتة مهامكم واتخاذ قرارات أفضل.",
+        tags: ["أدوات الذكاء الاصطناعي", "أتمتة", "إنتاجية"],
+        interest: "الذكاء الاصطناعي",
+      },
+      {
+        icon: "Users",
+        title: "الموارد البشرية",
+        description: "الانتقاء والأجور وإدارة شؤون الموظفين وتطوير الكفاءات.",
+        tags: ["انتقاء", "أجور", "كفاءات"],
+        interest: "الموارد البشرية",
+      },
+      {
+        icon: "Briefcase",
+        title: "مستشار جبائي",
+        description: "كونوا المرجع في الجباية: استشارة ومطابقة وتحسين.",
+        tags: ["استشارة", "مطابقة", "تحسين"],
+        interest: "مستشار جبائي",
       },
     ],
   },
@@ -804,7 +852,7 @@ const ar: SiteContent = {
       {
         id: "ena",
         tab: "مناظرة ENA",
-        icon: GraduationCap,
+        icon: "GraduationCap",
         title: "التحضير لمناظرة المدرسة الوطنية للإدارة — مراجعة عن بُعد",
         description:
           "برنامج مراجعة منهجي لمراجعة الأساسيات والتدرب على المنهجية والاستعداد للاختبارات من منزلكم.",
@@ -822,7 +870,7 @@ const ar: SiteContent = {
       {
         id: "travail",
         tab: "قانون الشغل",
-        icon: Users,
+        icon: "Users",
         title: "أتقنوا قانون الشغل وأمّنوا فرقكم بشكل دائم",
         description:
           "من الانتداب إلى إنهاء العقد، تعلموا تأمين كل مراحل علاقة الشغل والوقاية من النزاعات المهنية.",
@@ -839,7 +887,7 @@ const ar: SiteContent = {
       {
         id: "creation",
         tab: "إحداث المؤسسات",
-        icon: Rocket,
+        icon: "Rocket",
         title: "نظموا مشروعكم بنجاح: مفاتيح إحداث مؤسستكم",
         description:
           "عندكم فكرة مشروع؟ أسسوه على قواعد قانونية وجبائية متينة من الفكرة إلى الانطلاق.",
@@ -865,22 +913,22 @@ const ar: SiteContent = {
     overlayDesc: "القانون في خدمة قراراتكم",
     items: [
       {
-        icon: Target,
+        icon: "Target",
         title: "العملي أولًا",
         description: "حالات واقعية وأدوات قابلة للتطبيق المباشر في يومكم المهني.",
       },
       {
-        icon: Compass,
+        icon: "Compass",
         title: "رؤية استراتيجية",
         description: "افهموا القواعد والأهم أن تعرفوا توظيفها لاتخاذ القرار واستباق الأحداث.",
       },
       {
-        icon: Laptop,
+        icon: "Laptop",
         title: "تكوين عن بُعد",
         description: "تكوّنوا أينما كنتم في تونس دون عناء التنقل.",
       },
       {
-        icon: MessageSquare,
+        icon: "MessageSquare",
         title: "استشارة مخصصة",
         description: "مستشار يوجهكم نحو المسار المناسب لملفكم وأهدافكم.",
       },
@@ -931,7 +979,7 @@ const ar: SiteContent = {
     footnote: "أفراد ومؤسسات وإدارات: كل عرض يُعدّ حسب أهدافكم.",
     offers: [
       {
-        icon: Briefcase,
+        icon: "Briefcase",
         name: "تكوين فردي",
         tagline: "لتطوير مهاراتكم في مجال محدد.",
         price: "حسب الطلب",
@@ -946,7 +994,7 @@ const ar: SiteContent = {
         interest: "تكوين فردي",
       },
       {
-        icon: GraduationCap,
+        icon: "GraduationCap",
         name: "التحضير لمناظرة ENA",
         tagline: "مراجعة منهجية لاجتياز الاختبارات بثقة.",
         price: "حسب الطلب",
@@ -962,7 +1010,7 @@ const ar: SiteContent = {
         highlighted: true,
       },
       {
-        icon: Building,
+        icon: "Building",
         name: "المؤسسات والإدارات",
         tagline: "برنامج مصمم حسب رهانات فرقكم.",
         price: "حسب الحاجة",
@@ -1022,6 +1070,7 @@ const ar: SiteContent = {
     titleAccent: "مشروعكم التكويني",
     desc: "أخبرونا بما تريدون تعلمه. سيتصل بكم مستشار لتوجيهكم نحو المسار المناسب وإعلامكم بالأسعار والمواعيد القادمة.",
     fbLabel: "Forma Business Lex على فيسبوك",
+    waLabel: "راسلونا على واتساب",
     address: "تونس 2066، تونس",
     reassurances: ["دون التزام", "استشارة مخصصة", "رد عبر البريد أو الهاتف"],
     formTitle: "طلب معلومات",

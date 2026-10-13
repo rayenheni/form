@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { useLang } from "../i18n/LanguageContext";
 import { cn } from "../utils/cn";
-import { ArrowFwd, Marker, Reveal, SectionHeading } from "./ui";
+import { ArrowFwd, ContentIcon, Marker, Reveal, SectionHeading } from "./ui";
 
 interface PricingProps {
   onRequest: (interest: string) => void;
@@ -30,7 +30,6 @@ export default function Pricing({ onRequest }: PricingProps) {
 
         <div className="mx-auto mt-12 grid max-w-6xl gap-6 sm:mt-16 lg:grid-cols-3 lg:items-center">
           {s.offers.map((offer, index) => {
-            const Icon = offer.icon;
             const featured = Boolean(offer.highlighted);
             return (
               <Reveal key={offer.name} delay={index * 0.1} className={cn(featured && "max-lg:order-first")}>
@@ -54,7 +53,7 @@ export default function Pricing({ onRequest }: PricingProps) {
                       featured ? "bg-white/15 text-sun-300 ring-1 ring-white/20" : "bg-brand-50 text-brand-600"
                     )}
                   >
-                    <Icon className="h-6 w-6" aria-hidden="true" />
+                    <ContentIcon name={offer.icon} className="h-6 w-6" />
                   </span>
 
                   <h3 className={cn("mt-6 font-display text-2xl font-extrabold", featured ? "text-white" : "text-brand-950")}>

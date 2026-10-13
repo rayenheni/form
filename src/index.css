@@ -181,14 +181,16 @@
     border-radius: 0.2em;
     background-image: linear-gradient(100deg, var(--color-sun-300), var(--color-sun-400));
     background-repeat: no-repeat;
-    background-position: 0 88%;
-    background-size: 0% 0.4em;
+    /* Bande placée sous la ligne de base : elle souligne le texte sans jamais
+       traverser les glyphes (lisibilité préservée sur les grands titres). */
+    background-position: 0 97%;
+    background-size: 0% 0.32em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
     transition: background-size 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
   }
   .marker-on {
-    background-size: 100% 0.4em;
+    background-size: 100% 0.32em;
   }
 
   .no-scrollbar {

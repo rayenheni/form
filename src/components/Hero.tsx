@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, GraduationCap, MapPin } from "lucide-react";
 import { useLang } from "../i18n/LanguageContext";
-import { ArrowFwd, Marker, ease } from "./ui";
+import { ArrowFwd, ContentIcon, Marker, ease } from "./ui";
 
 const HERO_IMAGE =
   "https://images.pexels.com/photos/18999484/pexels-photo-18999484.jpeg?auto=compress&cs=tinysrgb&w=1400";
@@ -154,10 +154,10 @@ export default function Hero() {
                 {h.domainsLabel}
               </p>
               <ul className="mt-3 space-y-2">
-                {h.heroDomains.map(({ icon: Icon, label }) => (
+                {h.heroDomains.map(({ icon, label }) => (
                   <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-brand-950">
                     <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      <ContentIcon name={icon} className="h-4 w-4" />
                     </span>
                     {label}
                   </li>
@@ -172,10 +172,10 @@ export default function Hero() {
               {h.domainsLabel}
             </p>
             <ul className="mt-3 grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
-              {h.heroDomains.map(({ icon: Icon, label }) => (
+              {h.heroDomains.map(({ icon, label }) => (
                 <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-brand-950">
                   <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
-                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    <ContentIcon name={icon} className="h-4 w-4" />
                   </span>
                   <span className="leading-tight">{label}</span>
                 </li>

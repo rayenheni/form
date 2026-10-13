@@ -16,4 +16,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  server: {
+    host: true,
+    port: 5173,
+    // Aperçu dans un environnement bac à sable : n'autorise tous les hôtes que si
+    // VITE_ALLOW_ALL_HOSTS est défini (le build de production n'est pas concerné).
+    allowedHosts: process.env.VITE_ALLOW_ALL_HOSTS === "true" ? true : [],
+    // Le panneau d'aperçu peut conserver une ancienne version : on interdit tout
+    // cache navigateur pour que chaque rechargement serve le code courant.
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  },
 });

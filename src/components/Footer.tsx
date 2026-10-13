@@ -1,9 +1,8 @@
-import { ArrowUp, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { ArrowUp, Mail, MapPin, Phone } from "lucide-react";
 import { contact, telHref } from "../constants/content";
 import { useLang } from "../i18n/LanguageContext";
 import { BUILD_LABEL } from "../constants/buildInfo";
-import { ADMIN_PATH } from "../store";
-import { ArrowFwd, FacebookIcon, Logo } from "./ui";
+import { FacebookIcon, Logo } from "./ui";
 
 export default function Footer() {
   const { t } = useLang();
@@ -106,19 +105,6 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Accès administrateur : visible uniquement si VITE_ADMIN_PATH est défini. */}
-        {ADMIN_PATH && (
-          <div className="mt-8 flex justify-center border-t border-brand-100 pt-8">
-            <a
-              href={`#/${ADMIN_PATH}`}
-              className="group inline-flex items-center gap-2 rounded-full bg-brand-950 px-5 py-2.5 text-sm font-bold text-white shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
-            >
-              <ShieldCheck className="h-4 w-4 text-sun-400" aria-hidden="true" />
-              Administration
-              <ArrowFwd className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:-scale-x-100" />
-            </a>
-          </div>
-        )}
       </div>
     </footer>
   );

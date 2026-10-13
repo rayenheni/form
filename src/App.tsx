@@ -4,7 +4,6 @@ import Benefits from "./components/Benefits";
 import Contact from "./components/Contact";
 import Expertise from "./components/Expertise";
 import FAQ from "./components/FAQ";
-import AdminTab from "./components/AdminTab";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import MobileCTA from "./components/MobileCTA";
@@ -16,7 +15,7 @@ import TrustBar from "./components/TrustBar";
 import AdminPanel from "./admin/AdminPanel";
 import { ContentProvider } from "./i18n/ContentProvider";
 import { LanguageProvider, useLang } from "./i18n/LanguageContext";
-import { ADMIN_IS_DEFAULT, ADMIN_PATH, isAdminRoute } from "./store";
+import { ADMIN_IS_DEFAULT, isAdminRoute } from "./store";
 import { usePageviewTracking } from "./lib/tracking";
 
 function Site() {
@@ -69,7 +68,6 @@ function Site() {
 
       <Footer />
       <MobileCTA />
-      <AdminTab />
     </div>
   );
 }
@@ -107,6 +105,3 @@ export default function App() {
     </MotionConfig>
   );
 }
-
-/** Rappel du chemin d'accès à l'administration (masqué s'il n'est pas défini). */
-export const adminRoute = ADMIN_PATH ? `#/${ADMIN_PATH}` : null;

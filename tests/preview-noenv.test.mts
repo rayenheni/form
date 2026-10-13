@@ -41,17 +41,17 @@ async function scenario(label: string, url: string, assertions: (html: string, w
 
 const base = "https://sbx-l224m3ykcpixobbd.arena.site";
 
-// Sans VITE_PREVIEW_ADMIN, la racine = site public, avec le bouton Administration.
+// Sans VITE_PREVIEW_ADMIN, la racine = site public, SANS aucun bouton d'accès à
+// l'administration (l'accès se fait par l'URL secrète `#/admin-fbl`).
 // Vérifie aussi la collecte : les tests de dashboard injectent un magasin en mémoire,
 // donc c'est ici le seul endroit où le chemin `browserKv()` du VRAI bundle est exercé.
 // (Assertion dans CE scénario : `scenario()` cache-buste par URL, un second scénario
 // sur la même URL réutiliserait le module et ne redémarrerait pas l'application.)
-await scenario("racine (build sans env) → site public + bouton Administration + visite collectée", `${base}/`, (html, win) => {
+await scenario("racine (build sans env) → site public sans entrée admin visible + visite collectée", `${base}/`, (html, win) => {
   assert.ok(html.includes("lead-name") || html.includes("contact"), "formulaire de contact absent");
-  assert.ok(html.includes("#/admin-fbl"), "bouton Administration absent (repli commité non appliqué)");
+  assert.ok(!html.includes("#/admin-fbl"), "lien Administration encore visible (pied de page ou onglet)");
   assert.ok(html.includes("build admin-v3"), "repère de version absent");
-  assert.ok(html.includes("Ouvrir l'administration"), "onglet flottant Administration absent");
-  assert.ok(html.includes("fixed end-0 top-1/2"), "onglet flottant mal positionné");
+  assert.ok(!html.includes("Ouvrir l'administration"), "onglet flottant Administration encore visible");
 
   const raw = win.localStorage.getItem("fbl.analytics.v1");
   assert.ok(raw, "aucune donnée analytique écrite dans localStorage");

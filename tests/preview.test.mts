@@ -73,11 +73,11 @@ await scenario("racine de l'aperçu → administration", `${base}/`, (html) => {
   assert.ok(!html.includes("Forma Business Lex — Centre"), "la landing page ne devrait pas s'afficher");
 });
 
-await scenario("?site=1 → site public + bouton Administration visible", `${base}/?site=1`, (html) => {
+await scenario("?site=1 → site public sans entrée admin visible", `${base}/?site=1`, (html) => {
   assert.ok(html.includes("lead-name") || html.includes("contact"), "formulaire de contact absent");
   assert.ok(!html.includes("accès administrateur"), "l'administration ne devrait pas s'afficher");
-  assert.ok(html.includes("#/admin-fbl-demo"), "bouton Administration absent du pied de page");
-  assert.ok(html.includes(">Administration<") || html.includes("Administration"), "libellé Administration absent");
+  assert.ok(!html.includes("#/admin-fbl-demo"), "lien Administration encore visible");
+  assert.ok(!html.includes("Ouvrir l'administration"), "onglet flottant Administration encore visible");
 });
 
 console.log(`\n${passed} scénario(s) réussi(s), ${failures.length} échec(s).`);

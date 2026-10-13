@@ -22,8 +22,16 @@ export default function AdminGate({ session, onSignedIn }: GateProps) {
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [lockedFor, setLockedFor] = useState(0);
 
   useEffect(() => setMode(setupRequired ? "setup" : "signin"), [setupRequired]);
+
+  /* Décompte du verrouillage (trop d'essais) : une seconde à la fois, jusqu'à 0. */
+  useEffect(() => {
+    if (lockedFor <= 0) return;
+    const timer = window.setInterval(() => setLockedFor((value) => Math.max(0, value - 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, [lockedFor]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,6 +47,7 @@ export default function AdminGate({ session, onSignedIn }: GateProps) {
         onSignedIn(await session.signIn(email.trim(), password));
       }
     } catch (cause) {
+      setLockedFor(session.lockoutRemainingMs?.() ?? 0);
       setError(cause instanceof Error ? cause.message : "Connexion impossible.");
     } finally {
       setBusy(false);
@@ -89,6 +98,7 @@ export default function AdminGate({ session, onSignedIn }: GateProps) {
               <input
                 type={show ? "text" : "password"}
                 value={password}
+                maxLength={128}
                 autoComplete={mode === "setup" ? "new-password" : "current-password"}
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 pe-10 text-sm focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10"
@@ -125,9 +135,19 @@ export default function AdminGate({ session, onSignedIn }: GateProps) {
             </p>
           )}
 
+          {lockedFor > 0 && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800">
+              Déverrouillage automatique dans{" "}
+              {Math.ceil(lockedFor / 60_000) >= 1
+                ? `${Math.ceil(lockedFor / 60_000)} min`
+                : `${Math.ceil(lockedFor / 1000)} s`}
+              .
+            </p>
+          )}
+
           <button
             type="submit"
-            disabled={busy || (!password && mode === "setup") || (session.mode === "supabase" && !email)}
+            disabled={busy || lockedFor > 0 || (!password && mode === "setup") || (session.mode === "supabase" && !email)}
             className="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700 disabled:cursor-wait disabled:opacity-70"
           >
             {busy ? "Vérification…" : mode === "setup" ? "Créer l'accès" : "Se connecter"}

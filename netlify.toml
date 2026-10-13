@@ -10,3 +10,15 @@
   NODE_VERSION = "22"
   # To send contact-form leads to a webhook or form backend, set VITE_LEADS_ENDPOINT
   # in the Netlify UI (Project configuration > Environment variables), not here.
+
+# Security headers (mirrored in public/_headers for Cloudflare Pages).
+# `unsafe-inline` for scripts/styles is required: the build inlines everything
+# into a single HTML file. Tighten `connect-src` if you remove VITE_LEADS_ENDPOINT.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"

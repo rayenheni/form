@@ -285,6 +285,68 @@ await test("Session locale : changement de mot de passe", async () => {
   assert.ok(await session.signIn("admin@local", "deuxieme-motdepasse"));
 });
 
+/* ─────────────────────────── Sécurité ─────────────────────────── */
+
+await test("Session locale : mot de passe trivial ou trop long refusé", async () => {
+  const session = createLocalSession(memoryKv());
+  await assert.rejects(() => session.setupLocal?.("12345678"), /trop courant/);
+  await assert.rejects(() => session.setupLocal?.("x".repeat(129)), /ne doit pas dépasser/);
+});
+
+await test("Session locale : trop d'essais verrouille même le bon mot de passe", async () => {
+  const kv = memoryKv();
+  const session = createLocalSession(kv);
+  await session.setupLocal?.("motdepasse-solide");
+  for (let essai = 0; essai < 4; essai += 1) {
+    await assert.rejects(() => session.signIn("admin@local", `faux-${essai}`), /incorrects/);
+  }
+  await assert.rejects(() => session.signIn("admin@local", "faux-4"), /Trop d'essais/, "le 5e échec verrouille");
+  await assert.rejects(() => session.signIn("admin@local", "motdepasse-solide"), /Trop d'essais/);
+  assert.ok((session.lockoutRemainingMs?.() ?? 0) > 0, "un délai de verrouillage doit être exposé");
+});
+
+await test("Session locale : un succès réinitialise le compteur d'échecs", async () => {
+  const kv = memoryKv();
+  const session = createLocalSession(kv);
+  await session.setupLocal?.("motdepasse-solide");
+  for (let essai = 0; essai < 4; essai += 1) {
+    await assert.rejects(() => session.signIn("admin@local", `faux-${essai}`), /incorrects/);
+  }
+  assert.ok(await session.signIn("admin@local", "motdepasse-solide"));
+  assert.equal(session.lockoutRemainingMs?.(), 0);
+  await assert.rejects(() => session.signIn("admin@local", "faux"), /incorrects/, "le compteur repart de zéro");
+});
+
+await test("Session locale : expiration après 12 heures d'inactivité", async () => {
+  const kv = memoryKv();
+  const session = createLocalSession(kv);
+  const user = await session.setupLocal?.("motdepasse-solide");
+  assert.ok(await session.getSession());
+  const admin = JSON.parse(kv.getItem("fbl.admin.v1") ?? "{}");
+  kv.setItem("fbl.admin.session.v1", JSON.stringify({ id: admin.id, at: Date.now() - 13 * 3_600_000 }));
+  assert.equal(await session.getSession(), null, "session expirée : accès refusé");
+  assert.ok(await session.signIn("admin@local", "motdepasse-solide"), "une connexion rouvre une session valide");
+  assert.deepEqual(await session.getSession(), { id: user?.id, email: "admin@local" });
+});
+
+await test("Session locale : anciens formats (session et haché) acceptés puis modernisés", async () => {
+  const kv = memoryKv();
+  const salt = "sel-ancien";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${salt}:motdepasse-ancien`));
+  const hash = Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+  kv.setItem("fbl.admin.v1", JSON.stringify({ id: "local-ancien", email: "admin@local", salt, hash }));
+  const session = createLocalSession(kv);
+  kv.setItem("fbl.admin.session.v1", "local-ancien");
+  assert.ok(await session.getSession(), "l'ancien format de session doit rester valide");
+  assert.ok(await session.signIn("admin@local", "motdepasse-ancien"), "l'ancien haché doit rester vérifiable");
+  const updated = JSON.parse(kv.getItem("fbl.admin.v1") ?? "{}");
+  assert.notEqual(updated.algo, undefined, "le haché doit être modernisé après connexion");
+  assert.notEqual(updated.salt, salt, "le sel doit être renouvelé à la migration");
+  assert.ok(await session.signIn("admin@local", "motdepasse-ancien"), "la connexion redevient possible après migration");
+});
+
 /* ─────────────────────────── Bilan ─────────────────────────── */
 
 console.log(`\n${passed} test(s) réussi(s), ${failures.length} échec(s).`);

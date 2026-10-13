@@ -60,14 +60,25 @@ vide), il retombe sur le contenu intégré au build : la page ne peut pas s'affi
 1. Créez un projet sur [supabase.com](https://supabase.com).
 2. **SQL Editor** → collez `supabase/schema.sql` → *Run*. Cela crée les cinq tables
    (`published_content`, `content_drafts`, `content_revisions`, `site_pageviews`,
-   `site_reservations`) et les politiques de sécurité :
+   `site_reservations`), la liste blanche `admin_users` et les politiques de sécurité :
    - lecture publique du contenu publié uniquement ;
-   - écriture du contenu réservée aux utilisateurs authentifiés ;
-   - analytique : dépôt anonyme autorisé (insert), lecture réservée à l'administrateur.
-3. **Authentication** → *Users* → *Add user* : c'est le compte administrateur
+   - écriture du contenu réservée aux comptes inscrits dans `admin_users` (liste blanche) ;
+   - analytique : dépôt anonyme limité en taille (insert), lecture réservée à l'administrateur.
+3. **Authentication → Sign In / Providers** : désactivez « Allow new users to sign up ».
+   Personne ne pourra créer de compte de lui-même.
+4. **Authentication** → *Users* → *Add user* : c'est le compte administrateur
    (désactivez « Auto Confirm » si vous voulez valider l'e-mail).
-4. Récupérez l'URL et la clé `anon` (*Project Settings > API*) dans `.env.local`.
-5. Facultatif, pour amorcer la base avec le contenu actuel du dépôt :
+5. Toujours dans **SQL Editor**, autorisez ce compte à publier :
+
+```sql
+insert into public.admin_users (id)
+  select id from auth.users where email = 'votre-compte@exemple.com';
+```
+
+   Sans cette étape, la connexion réussit mais toute publication est refusée
+   (la base ne reconnaît pas le compte comme administrateur).
+6. Récupérez l'URL et la clé `anon` (*Project Settings > API*) dans `.env.local`.
+7. Facultatif, pour amorcer la base avec le contenu actuel du dépôt :
 
 ```bash
 SUPABASE_URL=https://xxxx.supabase.co \
@@ -115,17 +126,36 @@ personnelle n'est collectée (ni adresse IP, ni empreinte, ni cookie tiers). La 
 échoue toujours en silence : elle ne peut pas casser le site public.
 
 > **Mode local** : sans Supabase, les statistiques proviennent de *votre* navigateur
-> uniquement — pratique pour tester, insuffisant en production. Un bandeau le rappelle
-> dans le tableau de bord.
+> uniquement — pratique pour tester, insuffisant en production. L'indicateur
+> « Brouillon local » / « En ligne » en bas de la barre latérale le rappelle discrètement.
 
 ## Sécurité : ce qui protège réellement les données
 
 Le mot de passe de l'interface n'est qu'un contrôle d'accès côté navigateur. La protection
 réelle est côté serveur :
 
-- **Supabase** : les politiques RLS de `supabase/schema.sql` refusent toute écriture d'un
-  visiteur non authentifié, même s'il devine le chemin de l'administration ;
+- **Supabase** : les politiques RLS de `supabase/schema.sql` refusent toute écriture
+  d'un compte absent de la liste blanche `admin_users` — même un compte authentifié
+  créé par un intrus ne peut rien modifier. Les inscriptions publiques doivent être
+  désactivées (étape 3 de la mise en place). L'anonyme ne peut que *déposer* une
+  visite ou une réservation, dans la limite de tailles maximales ;
 - **mode local** : rien n'est partagé, les données restent dans le navigateur.
+
+Mesures intégrées côté interface :
+
+- mot de passe : 8 caractères minimum, 128 maximum, mots de passe triviaux refusés,
+  stocké uniquement sous forme de haché **PBKDF2-SHA256** (210 000 itérations, sel
+  aléatoire) ; les anciens hachés sont modernisés automatiquement à la connexion ;
+- **verrouillage** : après 5 essais erronés, nouvelle tentative refusée 30 s, puis
+  1 min, 2 min… (doublement, plafonné à 32 min) — protection contre le devin
+  systématique du mot de passe ;
+- **session** : fermeture automatique après 12 heures d'inactivité ;
+- **formulaire public** : champ piège invisible + délai minimal de remplissage
+  contre les robots, longueurs maximales alignées sur la base de données ;
+- **en-têtes HTTP** (Netlify / Cloudflare Pages, via `netlify.toml` et `public/_headers`) :
+  CSP, anti-clic-transport (`X-Frame-Options: DENY`), `nosniff`, `Referrer-Policy`,
+  `Permissions-Policy`. GitHub Pages n'accepte pas d'en-têtes personnalisés : la
+  balise `<meta name="referrer">` de `index.html` couvre le minimum là-bas.
 
 Recommandations : mot de passe long, `VITE_ADMIN_PATH` aléatoire, et un seul compte
 administrateur créé dans Supabase.

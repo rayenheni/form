@@ -80,8 +80,35 @@ comment on table public.site_reservations  is 'Demandes reçues via le formulair
 
 -- ─────────────────── Sécurité au niveau des lignes ───────────────────
 -- Lecture publique du contenu publié uniquement.
--- Écriture : uniquement un utilisateur authentifié (l'administrateur).
+-- Écriture : uniquement un compte inscrit dans `admin_users` (liste blanche).
 -- C'est cette couche — pas le mot de passe de l'interface — qui protège les données.
+--
+-- ⚠️  PENSEZ À DÉSACTIVER LES INSCRIPTIONS PUBLIQUES :
+--     Dashboard Supabase → Authentication → Sign In / Providers →
+--     désactivez « Allow new users to sign up ».
+--     Sans cela, n'importe qui pourrait créer un compte… mais il resterait
+--     SANS aucun pouvoir d'écriture tant que son identifiant n'est pas dans la liste.
+
+-- Liste blanche des administrateurs (invisible du public : RLS activé, aucune policy).
+create table if not exists public.admin_users (
+  id       uuid primary key references auth.users (id) on delete cascade,
+  added_at timestamptz not null default now()
+);
+alter table public.admin_users enable row level security;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.admin_users where id = auth.uid());
+$$;
+
+-- Après avoir créé votre compte administrateur (voir ADMIN.md), ajoutez-le :
+--   insert into public.admin_users (id)
+--     select id from auth.users where email = 'vous@exemple.com';
 
 alter table public.published_content enable row level security;
 alter table public.content_drafts    enable row level security;
@@ -95,28 +122,47 @@ create policy "Lecture publique du contenu publié"
 drop policy if exists "Écriture réservée à l'administrateur (publié)" on public.published_content;
 create policy "Écriture réservée à l'administrateur (publié)"
   on public.published_content for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (public.is_admin())
+  with check (public.is_admin());
 
 drop policy if exists "Brouillons réservés à l'administrateur" on public.content_drafts;
 create policy "Brouillons réservés à l'administrateur"
   on public.content_drafts for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (public.is_admin())
+  with check (public.is_admin());
 
 drop policy if exists "Historique réservé à l'administrateur" on public.content_revisions;
 create policy "Historique réservé à l'administrateur"
   on public.content_revisions for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (public.is_admin())
+  with check (public.is_admin());
 
 -- ─────────────────── Analytique ───────────────────
 -- Le visiteur anonyme peut DÉPOSER une ligne (insert uniquement), mais jamais
 -- lire ni modifier : la consultation reste réservée à l'administrateur.
 -- C'est ce qui permet au site public de compter ses visites sans compte ni jeton.
+-- Des limites de taille bloquent les dépôts abusifs (spam, données géantes).
 
 alter table public.site_pageviews    enable row level security;
 alter table public.site_reservations enable row level security;
+
+-- Limites de taille (ré-application sans erreur si le script est relancé).
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'site_pageviews_max_lengths') then
+    alter table public.site_pageviews add constraint site_pageviews_max_lengths check (
+      char_length(path) <= 300 and char_length(referrer) <= 300
+      and char_length(source) <= 80 and char_length(visitor_id) <= 64
+    );
+  end if;
+  if not exists (select 1 from pg_constraint where conname = 'site_reservations_max_lengths') then
+    alter table public.site_reservations add constraint site_reservations_max_lengths check (
+      char_length(name) <= 120 and char_length(email) <= 160 and char_length(phone) <= 40
+      and char_length(interest) <= 160 and char_length(message) <= 4000
+      and char_length(source) <= 80
+    );
+  end if;
+end $$;
 
 drop policy if exists "Dépôt anonyme des visites" on public.site_pageviews;
 create policy "Dépôt anonyme des visites"
@@ -127,7 +173,7 @@ create policy "Dépôt anonyme des visites"
 drop policy if exists "Visites réservées à l'administrateur" on public.site_pageviews;
 create policy "Visites réservées à l'administrateur"
   on public.site_pageviews for select
-  using (auth.role() = 'authenticated');
+  using (public.is_admin());
 
 drop policy if exists "Dépôt anonyme des demandes" on public.site_reservations;
 create policy "Dépôt anonyme des demandes"
@@ -138,8 +184,8 @@ create policy "Dépôt anonyme des demandes"
 drop policy if exists "Demandes réservées à l'administrateur" on public.site_reservations;
 create policy "Demandes réservées à l'administrateur"
   on public.site_reservations for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (public.is_admin())
+  with check (public.is_admin());
 
 -- ─────────────────── Amorçage du contenu intégré ───────────────────
 -- Facultatif : sans ligne en base, le site affiche le contenu intégré au build.

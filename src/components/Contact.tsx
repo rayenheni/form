@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, Mail, MapPin, MessageSquare, Phone } from "lucide-react";
 import { contact, telHref } from "../constants/content";
@@ -29,6 +29,8 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
   const s = t.contactUi;
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  /* Anti-robots : horodatage du montage du formulaire (dépôt express = robot). */
+  const mountedAt = useRef(Date.now());
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,6 +40,15 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
     const email = String(data.get("email") ?? "").trim();
     const phone = String(data.get("phone") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
+
+    /* Champ invisible rempli par des robots, ou dépôt en moins de 2 secondes :
+       on fait semblant de succès sans rien enregistrer. */
+    const honeypot = String(data.get("website") ?? "").trim();
+    if (honeypot || Date.now() - mountedAt.current < 2000) {
+      form.reset();
+      setStatus("sent");
+      return;
+    }
 
     const next: Partial<Record<Field, string>> = {};
     if (name.length < 2) next.name = s.errors.name;
@@ -226,6 +237,13 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                       </p>
                     </div>
 
+                    {/* Piège anti-robots : invisible et intabulable pour un humain,
+                        rempli automatiquement par beaucoup de robots. */}
+                    <div aria-hidden="true" className="sr-only">
+                      <label htmlFor="lead-website">Ne pas remplir</label>
+                      <input id="lead-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+                    </div>
+
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label htmlFor="lead-name" className={labelClass}>
@@ -235,6 +253,7 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                           id="lead-name"
                           name="name"
                           type="text"
+                          maxLength={120}
                           autoComplete="name"
                           placeholder={s.namePlaceholder}
                           aria-invalid={Boolean(errors.name)}
@@ -251,6 +270,7 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                           id="lead-phone"
                           name="phone"
                           type="tel"
+                          maxLength={40}
                           inputMode="tel"
                           autoComplete="tel"
                           placeholder="+216 …"
@@ -270,6 +290,7 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                         id="lead-email"
                         name="email"
                         type="email"
+                        maxLength={160}
                         autoComplete="email"
                         placeholder="nom@exemple.tn"
                         aria-invalid={Boolean(errors.email)}
@@ -318,6 +339,7 @@ export default function Contact({ interest, onInterestChange }: ContactProps) {
                         id="lead-message"
                         name="message"
                         rows={3}
+                        maxLength={4000}
                         placeholder={s.messagePlaceholder}
                         className={cn(fieldClass, "resize-none")}
                       />

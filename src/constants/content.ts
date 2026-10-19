@@ -232,7 +232,7 @@ const fr: SiteContent = {
   meta: {
     title: "Forma Business Lex — Formations en droit des affaires, fiscalité & conformité | Tunis",
     description:
-      "Forma Business Lex, centre de formation à Tunis : formations pratiques et stratégiques en droit des affaires, fiscalité, marchés publics, gouvernance et conformité. Préparation au concours ENA en ligne.",
+      "Forma Business Lex, centre de formation à Tunis : droit des affaires, fiscalité, marchés publics, gouvernance et préparation au concours ENA (méthodologie juridique, anglais, droit public, finances publiques, droit fiscal).",
     ogTitle: "Forma Business Lex — Centre de formation à Tunis",
   },
   skipLink: "Aller au contenu principal",
@@ -279,7 +279,7 @@ const fr: SiteContent = {
     highlights: [
       { icon: "MapPin", title: "Basé à Tunis", description: "Un centre de formation implanté à Tunis 2066." },
       { icon: "Laptop", title: "Formation en ligne", description: "Des sessions accessibles depuis toute la Tunisie." },
-      { icon: "GraduationCap", title: "Concours ENA", description: "Une préparation structurée, en révision en ligne." },
+      { icon: "GraduationCap", title: "Concours ENA", description: "Les sept matières du concours, en révision en ligne." },
       { icon: "Layers", title: "Offre complète", description: "Du droit des affaires à la conformité." },
     ],
     audiences: [
@@ -353,8 +353,9 @@ const fr: SiteContent = {
       {
         icon: "GraduationCap",
         title: "Concours ENA",
-        description: "Révisions, méthodologie et entraînement pour aborder les épreuves avec confiance.",
-        tags: ["Révision", "Méthodologie"],
+        description:
+          "Méthodologie juridique, anglais, droit constitutionnel, droit administratif, finances publiques, droit international public et droit fiscal : les sept matières du concours.",
+        tags: ["Méthodologie", "Droit public", "Finances publiques"],
         interest: "Concours ENA",
         badge: "En ligne",
       },
@@ -403,17 +404,19 @@ const fr: SiteContent = {
         id: "ena",
         tab: "Concours ENA",
         icon: "GraduationCap",
-        title: "Préparation au concours ENA — révision en ligne",
+        title: "Préparation au concours ENA — les sept matières, en ligne",
         description:
-          "Un programme de révision structuré pour revoir l'essentiel, travailler la méthode et s'entraîner aux épreuves, depuis chez vous.",
+          "Une préparation structurée qui couvre les sept matières du concours : méthodologie juridique, anglais, droit constitutionnel, droit administratif, finances publiques, droit international public et droit fiscal.",
         audience: "Candidats au concours",
         format: "Révision en ligne",
         modules: [
-          "Culture générale et méthodologie de la dissertation",
-          "Droit public et institutions",
-          "Économie et finances publiques",
-          "Note de synthèse : méthode et entraînement",
-          "Préparation à l'entretien avec le jury",
+          "Méthodologie juridique",
+          "Anglais",
+          "Droit constitutionnel",
+          "Droit administratif",
+          "Finances publiques",
+          "Droit international public",
+          "Droit fiscal",
         ],
         interest: "Concours ENA",
       },
@@ -496,6 +499,8 @@ const fr: SiteContent = {
       {
         tag: "Concours ENA",
         title: "Préparation au concours ENA – révision en ligne",
+        excerpt:
+          "Méthodologie juridique, anglais, droit constitutionnel, droit administratif, finances publiques, droit international public, droit fiscal : les sept matières du concours.",
         image: {
           src: "https://images.pexels.com/photos/7972358/pexels-photo-7972358.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
           alt: "Prise de notes dans un cahier pendant une révision sur ordinateur portable",
@@ -546,14 +551,14 @@ const fr: SiteContent = {
       {
         icon: "GraduationCap",
         name: "Préparation concours ENA",
-        tagline: "Une révision structurée pour aborder les épreuves avec méthode.",
+        tagline: "Les sept matières du concours, avec méthode et entraînement.",
         price: "Sur devis",
         priceNote: "Révision en ligne",
         features: [
-          "Révision en ligne",
-          "Méthodologie des épreuves écrites",
-          "Entraînement sur sujets",
-          "Préparation à l'oral",
+          "Les 7 matières du concours",
+          "Méthodologie juridique & anglais",
+          "Droit public, finances publiques & droit fiscal",
+          "Entraînement sur sujets et préparation à l'oral",
         ],
         cta: "Demander les modalités",
         interest: "Concours ENA",
@@ -587,6 +592,11 @@ const fr: SiteContent = {
         question: "Les formations se déroulent-elles en ligne ?",
         answer:
           "Oui. La préparation au concours ENA et nos formations professionnelles sont proposées en ligne. Contactez-nous pour connaître les modalités et les dates de chaque session.",
+      },
+      {
+        question: "Quelles matières couvre la préparation au concours ENA ?",
+        answer:
+          "La préparation couvre les sept matières du concours : méthodologie juridique, anglais, droit constitutionnel, droit administratif, finances publiques, droit international public et droit fiscal.",
       },
       {
         question: "Où se trouve Forma Business Lex ?",
@@ -685,7 +695,7 @@ const ar: SiteContent = {
   meta: {
     title: "فورما بيزنس لاكس — تكوينات في قانون الأعمال والجباية والامتثال | تونس",
     description:
-      "فورما بيزنس لاكس، مركز تكوين في تونس: تكوينات عملية واستراتيجية في قانون الأعمال والجباية والصفقات العمومية والحوكمة والامتثال. التحضير لمناظرة المدرسة الوطنية للإدارة عن بُعد.",
+      "فورما بيزنس لاكس، مركز تكوين في تونس: قانون الأعمال والجباية والصفقات العمومية والحوكمة والامتثال، والتحضير لمناظرة ENA (المنهجية القانونية، الإنجليزية، القانون العام، المالية العمومية).",
     ogTitle: "فورما بيزنس لاكس — مركز تكوين في تونس",
   },
   skipLink: "تخطَّ إلى المحتوى الرئيسي",
@@ -732,7 +742,7 @@ const ar: SiteContent = {
     highlights: [
       { icon: "MapPin", title: "مقرّنا في تونس", description: "مركز تكوين في تونس 2066." },
       { icon: "Laptop", title: "تكوين عن بُعد", description: "حصص متاحة من كل أنحاء تونس." },
-      { icon: "GraduationCap", title: "مناظرة ENA", description: "تحضير منهجي مع مراجعة عن بُعد." },
+      { icon: "GraduationCap", title: "مناظرة ENA", description: "المواد السبع للمناظرة مع مراجعة عن بُعد." },
       { icon: "Layers", title: "عرض شامل", description: "من قانون الأعمال إلى الامتثال." },
     ],
     audiences: [
@@ -803,8 +813,9 @@ const ar: SiteContent = {
       {
         icon: "GraduationCap",
         title: "مناظرة ENA",
-        description: "مراجعة ومنهجية وتدريب لاجتياز الاختبارات بثقة.",
-        tags: ["المراجعة", "المنهجية"],
+        description:
+          "المنهجية القانونية واللغة الإنجليزية والقانون الدستوري والقانون الإداري والمالية العمومية والقانون الدولي العام والقانون الجبائي: المواد السبع للمناظرة.",
+        tags: ["المنهجية", "القانون العام", "المالية العمومية"],
         interest: "مناظرة ENA",
         badge: "عن بُعد",
       },
@@ -853,17 +864,19 @@ const ar: SiteContent = {
         id: "ena",
         tab: "مناظرة ENA",
         icon: "GraduationCap",
-        title: "التحضير لمناظرة المدرسة الوطنية للإدارة — مراجعة عن بُعد",
+        title: "التحضير لمناظرة المدرسة الوطنية للإدارة — المواد السبع عن بُعد",
         description:
-          "برنامج مراجعة منهجي لمراجعة الأساسيات والتدرب على المنهجية والاستعداد للاختبارات من منزلكم.",
+          "تحضير منهجي يغطي المواد السبع للمناظرة: المنهجية القانونية، اللغة الإنجليزية، القانون الدستوري، القانون الإداري، المالية العمومية، القانون الدولي العام والقانون الجبائي.",
         audience: "المترشحون للمناظرة",
         format: "مراجعة عن بُعد",
         modules: [
-          "الثقافة العامة ومنهجية المقال",
-          "القانون العام والمؤسسات",
-          "الاقتصاد والمالية العمومية",
-          "المذكرة التركيبية: المنهجية والتدريب",
-          "التحضير للمقابلة مع لجنة التحكيم",
+          "المنهجية القانونية",
+          "اللغة الإنجليزية",
+          "القانون الدستوري",
+          "القانون الإداري",
+          "المالية العمومية",
+          "القانون الدولي العام",
+          "القانون الجبائي",
         ],
         interest: "مناظرة ENA",
       },
@@ -946,6 +959,8 @@ const ar: SiteContent = {
       {
         tag: "مناظرة ENA",
         title: "التحضير لمناظرة ENA — مراجعة عن بُعد",
+        excerpt:
+          "المنهجية القانونية، اللغة الإنجليزية، القانون الدستوري، القانون الإداري، المالية العمومية، القانون الدولي العام، القانون الجبائي: المواد السبع للمناظرة.",
         image: {
           src: "https://images.pexels.com/photos/7972358/pexels-photo-7972358.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
           alt: "تدوين الملاحظات في دفتر أثناء المراجعة على الحاسوب",
@@ -996,14 +1011,14 @@ const ar: SiteContent = {
       {
         icon: "GraduationCap",
         name: "التحضير لمناظرة ENA",
-        tagline: "مراجعة منهجية لاجتياز الاختبارات بثقة.",
+        tagline: "المواد السبع للمناظرة بمنهجية وتدريب.",
         price: "حسب الطلب",
         priceNote: "مراجعة عن بُعد",
         features: [
-          "مراجعة عن بُعد",
-          "منهجية الاختبارات الكتابية",
-          "التدرب على المواضيع",
-          "التحضير للشفوي",
+          "المواد السبع للمناظرة",
+          "المنهجية القانونية واللغة الإنجليزية",
+          "القانون العام والمالية العمومية والقانون الجبائي",
+          "التدرب على المواضيع والتحضير للشفوي",
         ],
         cta: "اطلب التفاصيل",
         interest: "مناظرة ENA",
@@ -1037,6 +1052,11 @@ const ar: SiteContent = {
         question: "هل تُجرى التكوينات عن بُعد؟",
         answer:
           "نعم. يتوفر التحضير لمناظرة ENA وتكويناتنا المهنية عن بُعد. اتصلوا بنا لمعرفة التفاصيل ومواعيد كل دورة.",
+      },
+      {
+        question: "ما هي المواد التي يغطيها التحضير لمناظرة ENA؟",
+        answer:
+          "يغطي التحضير المواد السبع للمناظرة: المنهجية القانونية، اللغة الإنجليزية، القانون الدستوري، القانون الإداري، المالية العمومية، القانون الدولي العام والقانون الجبائي.",
       },
       {
         question: "أين يوجد مركز Forma Business Lex؟",

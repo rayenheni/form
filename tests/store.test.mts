@@ -28,6 +28,36 @@ async function test(label: string, run: () => void | Promise<void>) {
 
 const fr = () => cloneContent(bundled.fr);
 
+/* Matières officielles de la préparation au concours ENA. */
+const ENA_SUBJECTS = {
+  fr: [
+    "Méthodologie juridique",
+    "Anglais",
+    "Droit constitutionnel",
+    "Droit administratif",
+    "Finances publiques",
+    "Droit international public",
+    "Droit fiscal",
+  ],
+  ar: [
+    "المنهجية القانونية",
+    "اللغة الإنجليزية",
+    "القانون الدستوري",
+    "القانون الإداري",
+    "المالية العمومية",
+    "القانون الدولي العام",
+    "القانون الجبائي",
+  ],
+} as const;
+
+await test("Contenu : le programme ENA couvre les sept matières du concours (FR et AR)", () => {
+  for (const lang of ["fr", "ar"] as const) {
+    const program = bundled[lang].programs.items.find((item) => item.id === "ena");
+    assert.ok(program, `programme ENA absent en ${lang}`);
+    assert.deepEqual(program.modules, [...ENA_SUBJECTS[lang]], `matières ENA incorrectes en ${lang}`);
+  }
+});
+
 await test("mergeContent : un texte distant vide retombe sur le texte intégré", () => {
   const merged = mergeContent(fr(), { hero: { titleA: "" } });
   assert.equal(merged.hero.titleA, bundled.fr.hero.titleA);

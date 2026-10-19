@@ -89,6 +89,22 @@ npm run seed:content
 La clé `service_role` contourne les règles de sécurité : elle ne doit **jamais** se retrouver
 dans le site ni dans Git.
 
+### Mettre à jour un contenu déjà publié
+
+Le site lit `published_content` : dès qu'une ligne existe, c'est elle qui est affichée, et le
+contenu intégré au build n'est plus visible. Après une mise à jour du dépôt, commencez par :
+
+```sql
+select lang, version, updated_at from public.published_content order by lang;
+```
+
+- **aucune ligne** : rien à faire, le nouveau contenu intégré est déjà affiché ;
+- **des lignes** : publiez depuis l'administration (corrigez la rubrique concernée, puis
+  *Publier*, en français **puis** en arabe) — ou exécutez le correctif SQL livré avec la mise
+  à jour (par exemple `supabase/patch-ena-sept-matieres.sql`) dans le SQL Editor. Un correctif
+  ne modifie que les champs annoncés, incrémente `version` et écrit une ligne dans
+  `content_revisions` : un retour en arrière reste possible par *Historique > Restaurer*.
+
 ## Utilisation
 
 - **Tableau de bord** : trafic, sources et réservations (voir la section dédiée ci-dessous).

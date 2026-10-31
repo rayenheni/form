@@ -189,6 +189,49 @@ doivent apparaître. Si le tableau reste vide :
 
 ---
 
+## 3 bis. Diagnostic express : « mes modifications ne sont pas en ligne »
+
+Ouvrez l'URL avec le paramètre de diagnostic :
+
+```
+https://votre-site.netlify.app/?diagnostic=1
+```
+
+Un panneau s'affiche en bas à gauche et répond aux trois questions qui comptent :
+
+| Ligne | Lecture |
+|---|---|
+| **Version du build** | repère du bundle réellement servi (permet de distinguer un vieux déploiement d'un cache) |
+| **Supabase** | « projet ‹ref› » = branché ; « non configuré » = build sans variables |
+| **Source du contenu** | « base Supabase (live) » ou « code intégré au build » |
+| **Contenu FR / AR** | `v<n> · <date> — ENA : 7 matière(s)` ; en rouge si ce n'est pas 7 |
+
+Trois combinaisons typiques :
+
+| Diagnostic | Cause | Correction |
+|---|---|---|
+| Supabase **non configuré** | variables absentes au build | ajouter les variables, puis **Clear cache and deploy** |
+| Supabase OK + « code intégré » | aucune ligne publiée n'est lue | exécuter `supabase/reset-content-complet.sql`, ou publier depuis l'admin |
+| Supabase OK + `ENA : 5 matière(s)` en rouge | la base contient l'ancien programme | exécuter `supabase/reset-content-complet.sql` |
+
+Le panneau ne s'affiche que sur demande (`?diagnostic=1` ou `#diagnostic`) et n'expose jamais
+la clé `anon` : seulement l'identifiant public du projet.
+
+### Remettre la base exactement en phase avec le site
+
+`supabase/reset-content-complet.sql` écrit dans `published_content` le contenu **complet**
+(français + arabe) tel qu'il est dans le code : toutes les rubriques, programme ENA à sept
+matières, carte formation, tarifs, FAQ, actualité, méta-description.
+
+- sauvegarde intégrale avant écriture (`published_content_backup_20261031`) ;
+- une révision d'historique par langue ;
+- rejouable sans risque.
+
+À exécuter quand la base contient une ligne partielle (par exemple issue d'un correctif
+antérieur) ou quand le site affiche encore l'ancien programme.
+
+---
+
 ## 4. Modifier le contenu ou le code
 
 | Vous changez… | Procédure |

@@ -9,6 +9,7 @@ import { createLocalStore, memoryKv } from "../src/store/localStore";
 import { createSupabaseStore } from "../src/store/supabaseStore";
 import { createLocalSession, isAdminPath, isAdminRoute } from "../src/store/adminSession";
 import { coerceIcons, mergeContent } from "../src/store";
+import { isDiagnosticRequested } from "../src/diagnostics/DiagnosticPanel";
 import { cloneContent, hasChanges } from "../src/store/types";
 import { createFakeSupabase } from "./fakeSupabase";
 
@@ -56,6 +57,16 @@ await test("Contenu : le programme ENA couvre les sept matières du concours (FR
     assert.ok(program, `programme ENA absent en ${lang}`);
     assert.deepEqual(program.modules, [...ENA_SUBJECTS[lang]], `matières ENA incorrectes en ${lang}`);
   }
+});
+
+await test("Diagnostic : activé par ?diagnostic=1 ou #diagnostic, jamais par défaut", () => {
+  const at = (search: string, hash = "") => isDiagnosticRequested({ search, hash } as Location);
+  assert.equal(at("?diagnostic=1"), true);
+  assert.equal(at(""), false, "sans paramètre, aucun panneau");
+  assert.equal(at("?site=1"), false);
+  assert.equal(at("?diagnostic=0"), false);
+  assert.equal(at("", "#diagnostic"), true);
+  assert.equal(at("", "#/admin-fbl"), false, "la route admin ne déclenche pas le diagnostic");
 });
 
 await test("mergeContent : un texte distant vide retombe sur le texte intégré", () => {

@@ -39,6 +39,9 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* Les blocs entrent en glissant depuis la droite : on évite qu'ils
+       ne créent un défilement horizontal pendant l'animation. */
+    overflow-x: clip;
   }
 
   body {

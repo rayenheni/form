@@ -62,6 +62,13 @@ export interface Benefit {
   description: string;
 }
 
+export interface GalleryItem {
+  src: string;
+  alt: string;
+  caption?: string;
+  tag?: string;
+}
+
 export interface Post {
   tag: string;
   title: string;
@@ -150,6 +157,19 @@ export interface SiteContent {
     overlayTitle: string;
     overlayDesc: string;
     items: Benefit[];
+  };
+  gallery: {
+    eyebrow: string;
+    titlePre: string;
+    titleAccent: string;
+    desc: string;
+    empty: string;
+    openLabel: string;
+    closeLabel: string;
+    prevLabel: string;
+    nextLabel: string;
+    counterLabel: string;
+    items: GalleryItem[];
   };
   news: {
     eyebrow: string;
@@ -245,6 +265,7 @@ const fr: SiteContent = {
     { label: "Programmes", href: "#programmes" },
     { label: "Formules", href: "#formules" },
     { label: "Actualités", href: "#actualites" },
+    { label: "Galerie", href: "#galerie" },
     { label: "FAQ", href: "#faq" },
   ],
   langLabel: "Changer de langue",
@@ -487,6 +508,62 @@ const fr: SiteContent = {
       },
     ],
   },
+  gallery: {
+    eyebrow: "Galerie",
+    titlePre: "Nos formations",
+    titleAccent: "en images",
+    desc: "Sessions, ateliers et travaux de groupe : un aperçu de la vie du centre.",
+    empty: "Les photos seront publiées très prochainement.",
+    openLabel: "Agrandir la photo",
+    closeLabel: "Fermer la galerie",
+    prevLabel: "Photo précédente",
+    nextLabel: "Photo suivante",
+    counterLabel: "Photo {current} sur {total}",
+    items: [
+      {
+        src: "/galerie/atelier-droit-du-travail-rh.jpg",
+        alt: "Un formateur devant deux écrans, le support « L'essentiel du droit du travail pour les RH » projeté en grand",
+        caption: "Atelier « L'essentiel du droit du travail pour les RH »",
+        tag: "Atelier",
+      },
+      {
+        src: "/galerie/seminaire-salle-conference.jpg",
+        alt: "Salle de séminaire avec écran de projection affichant un support en arabe et tables habillées de blanc",
+        caption: "Séminaire en salle de conférence",
+        tag: "Séminaire",
+      },
+      {
+        src: "/galerie/echange-equipe-bureau.jpg",
+        alt: "Quatre participants autour d'une table de travail, ordinateurs et documents ouverts, vue sur la ville",
+        caption: "Échanges autour d'un dossier",
+        tag: "Formation",
+      },
+      {
+        src: "/galerie/equipe-formation-groupe.jpg",
+        alt: "Photo de groupe de six personnes derrière un bureau, souriantes, à la fin d'une formation",
+        caption: "L'équipe et les participants",
+        tag: "Événement",
+      },
+      {
+        src: "/galerie/session-formation-equipe.jpg",
+        alt: "Deux participantes devant l'écran de projection et la bannière IEV CTF Med",
+        caption: "Accompagnement individualisé en salle",
+        tag: "Accompagnement",
+      },
+      {
+        src: "/galerie/session-formation-binome.jpg",
+        alt: "Une participante devant un ordinateur portable accompagnée d'une formatrice",
+        caption: "Suivi personnalisé des participants",
+        tag: "Accompagnement",
+      },
+      {
+        src: "/galerie/atelier-travail-table-ronde.jpg",
+        alt: "Quatre personnes travaillent sur un dossier autour d'une table ronde, avec ordinateurs et documents",
+        caption: "Atelier de travail sur dossier",
+        tag: "Atelier",
+      },
+    ],
+  },
   news: {
     eyebrow: "Actualités",
     titlePre: "Nos dernières",
@@ -708,6 +785,7 @@ const ar: SiteContent = {
     { label: "البرامج", href: "#programmes" },
     { label: "الصيغ", href: "#formules" },
     { label: "المستجدات", href: "#actualites" },
+    { label: "معرض الصور", href: "#galerie" },
     { label: "الأسئلة الشائعة", href: "#faq" },
   ],
   langLabel: "تغيير اللغة",
@@ -944,6 +1022,62 @@ const ar: SiteContent = {
         icon: "MessageSquare",
         title: "استشارة مخصصة",
         description: "مستشار يوجهكم نحو المسار المناسب لملفكم وأهدافكم.",
+      },
+    ],
+  },
+  gallery: {
+    eyebrow: "معرض الصور",
+    titlePre: "تكويناتنا",
+    titleAccent: "بالصور",
+    desc: "حصص وورشات وأشغال جماعية: لمحة عن الحياة داخل المركز.",
+    empty: "سيتم نشر الصور قريبًا.",
+    openLabel: "تكبير الصورة",
+    closeLabel: "إغلاق المعرض",
+    prevLabel: "الصورة السابقة",
+    nextLabel: "الصورة التالية",
+    counterLabel: "الصورة {current} من {total}",
+    items: [
+      {
+        src: "/galerie/atelier-droit-du-travail-rh.jpg",
+        alt: "مكوّن أمام شاشتين يعرض دعم « L'essentiel du droit du travail pour les RH »",
+        caption: "ورشة « أساسيات قانون الشغل لمسؤولي الموارد البشرية »",
+        tag: "ورشة",
+      },
+      {
+        src: "/galerie/seminaire-salle-conference.jpg",
+        alt: "قاعة ندوة تضم شاشة عرض تعرض دعماً بالعربية وطاولات مغطاة باللون الأبيض",
+        caption: "ندوة في قاعة مؤتمرات",
+        tag: "ندوة",
+      },
+      {
+        src: "/galerie/echange-equipe-bureau.jpg",
+        alt: "أربعة مشاركين حول طاولة عمل، حواسيب ووثائق مفتوحة، ومنظر على المدينة",
+        caption: "تبادل حول ملف عمل",
+        tag: "تكوين",
+      },
+      {
+        src: "/galerie/equipe-formation-groupe.jpg",
+        alt: "صورة جماعية لستة أشخاص خلف مكتب، مبتسمين، في ختام تكوين",
+        caption: "الفريق والمشاركون",
+        tag: "مناسبة",
+      },
+      {
+        src: "/galerie/session-formation-equipe.jpg",
+        alt: "مشاركتان أمام شاشة العرض ولافتة IEV CTF Med",
+        caption: "متابعة فردية في القاعة",
+        tag: "متابعة",
+      },
+      {
+        src: "/galerie/session-formation-binome.jpg",
+        alt: "مشاركة أمام حاسوب محمول برفقة مكوّنة",
+        caption: "متابعة شخصية للمشاركين",
+        tag: "متابعة",
+      },
+      {
+        src: "/galerie/atelier-travail-table-ronde.jpg",
+        alt: "أربعة أشخاص يعملون على ملف حول طاولة مستديرة مع حواسيب ووثائق",
+        caption: "ورشة عمل على ملف",
+        tag: "ورشة",
       },
     ],
   },

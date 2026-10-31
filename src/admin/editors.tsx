@@ -1,4 +1,4 @@
-import type { Benefit, Domain, Faq, FeaturedProgram, Lang, Offer, Post, SiteContent } from "../constants/content";
+import type { Benefit, Domain, Faq, FeaturedProgram, GalleryItem, Lang, Offer, Post, SiteContent } from "../constants/content";
 import { contact as siteContact, type NavLink } from "../constants/content";
 import type { IconName } from "../constants/icons";
 import { Field, IconPicker, ItemCard, ListEditor, TextArea, TextInput, Toggle, listHelpers } from "./fields";
@@ -239,6 +239,104 @@ export function ProgramsEditor(props: EditorProps) {
                     helpers.update(index, { modules: v.split("\n").map((m) => m.trim()).filter(Boolean) })
                   }
                 />
+              </Field>
+            </div>
+          </ItemCard>
+        ))}
+      </ListEditor>
+    </div>
+  );
+}
+
+/* ─────────────────────────── Galerie ─────────────────────────── */
+export function GalleryEditor(props: EditorProps) {
+  const { items, helpers } = useList<GalleryItem>("gallery", "items", props);
+  const section = props.content.gallery;
+  const dir = rtl(props.lang);
+
+  return (
+    <div className="space-y-6">
+      <div className={grid}>
+        <Field label="Surtitre">
+          <TextInput value={section.eyebrow} dir={dir} onChange={(v) => props.onSection("gallery", { ...section, eyebrow: v })} />
+        </Field>
+        <Field label="Titre (début)">
+          <TextInput value={section.titlePre} dir={dir} onChange={(v) => props.onSection("gallery", { ...section, titlePre: v })} />
+        </Field>
+        <Field label="Titre (partie colorée)">
+          <TextInput
+            value={section.titleAccent}
+            dir={dir}
+            onChange={(v) => props.onSection("gallery", { ...section, titleAccent: v })}
+          />
+        </Field>
+        <Field label="Texte affiché si la galerie est vide" hint="Visible uniquement quand aucune photo n'est publiée">
+          <TextInput value={section.empty} dir={dir} onChange={(v) => props.onSection("gallery", { ...section, empty: v })} />
+        </Field>
+      </div>
+      <Field label="Description">
+        <TextArea value={section.desc} dir={dir} onChange={(v) => props.onSection("gallery", { ...section, desc: v })} />
+      </Field>
+
+      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-4 text-sm text-slate-600">
+        <p className="font-bold text-brand-900">Où déposer les photos</p>
+        <p className="mt-1">
+          Placez les fichiers dans le dossier <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">public/galerie/</code> du
+          projet, puis indiquez ici le chemin <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">/galerie/nom-du-fichier.jpg</code>.
+          Une adresse complète (<code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">https://…</code>) fonctionne aussi.
+        </p>
+        <p className="mt-1.5 text-xs text-slate-500">
+          Formats conseillés : JPG ou WebP, 1600 px de large maximum, moins de 400 Ko. Le texte alternatif est lu par les lecteurs
+          d'écran et par Google : décrivez la photo en une phrase.
+        </p>
+      </div>
+
+      <ListEditor
+        items={items}
+        title="Photos"
+        addLabel="Ajouter une photo"
+        onAdd={() => helpers.add({ src: "", alt: "", caption: "", tag: "" })}
+      >
+        {items.map((item, index) => (
+          <ItemCard
+            key={index}
+            index={index}
+            total={items.length}
+            title={item.caption || item.src || `Photo ${index + 1}`}
+            onMove={(d) => helpers.move(index, d)}
+            onDuplicate={() => helpers.duplicate(index)}
+            onRemove={() => helpers.remove(index)}
+          >
+            <div className="grid gap-4 sm:grid-cols-[9rem_1fr]">
+              <Field label="Aperçu">
+                {item.src ? (
+                  <img
+                    src={item.src}
+                    alt={item.alt || item.caption || ""}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full rounded-xl border border-brand-100 object-cover"
+                  />
+                ) : (
+                  <div className="grid aspect-[4/3] w-full place-items-center rounded-xl border border-dashed border-brand-200 bg-white text-center text-xs text-slate-400">
+                    Aucune image
+                  </div>
+                )}
+              </Field>
+              <div className="space-y-4">
+                <Field label="Chemin ou URL de la photo" hint="Ex. /galerie/session-formation-equipe.jpg">
+                  <TextInput value={item.src} onChange={(v) => helpers.update(index, { src: v.trim() })} />
+                </Field>
+                <Field label="Texte alternatif (accessibilité)" hint="Décrivez la scène en une phrase">
+                  <TextInput value={item.alt} dir={dir} onChange={(v) => helpers.update(index, { alt: v })} />
+                </Field>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Field label="Légende affichée sous la photo">
+                <TextInput value={item.caption ?? ""} dir={dir} onChange={(v) => helpers.update(index, { caption: v })} />
+              </Field>
+              <Field label="Étiquette" hint="Ex. Formation, Atelier, Événement">
+                <TextInput value={item.tag ?? ""} dir={dir} onChange={(v) => helpers.update(index, { tag: v })} />
               </Field>
             </div>
           </ItemCard>

@@ -6,6 +6,7 @@ import {
   FileText,
   Globe,
   History,
+  Images,
   Inbox,
   LayoutGrid,
   LogOut,
@@ -34,6 +35,7 @@ import {
   ContactEditor,
   FaqEditor,
   FormationsEditor,
+  GalleryEditor,
   HeroEditor,
   NewsEditor,
   PricingEditor,
@@ -48,6 +50,7 @@ type SectionId =
   | "programs"
   | "hero"
   | "news"
+  | "gallery"
   | "pricing"
   | "faq"
   | "benefits"
@@ -70,6 +73,7 @@ const SECTIONS: Section[] = [
   { id: "programs", label: "Programmes phares", hint: "Onglets détaillés", icon: Rocket, render: (p) => <ProgramsEditor {...p} /> },
   { id: "hero", label: "Page d'accueil", hint: "Héro, atouts, publics", icon: Star, render: (p) => <HeroEditor {...p} /> },
   { id: "news", label: "Actualités", hint: "Publications et images", icon: FileText, render: (p) => <NewsEditor {...p} /> },
+  { id: "gallery", label: "Galerie", hint: "Photos du centre et légendes", icon: Images, render: (p) => <GalleryEditor {...p} /> },
   { id: "pricing", label: "Tarifs", hint: "Offres et avantages", icon: Wallet, render: (p) => <PricingEditor {...p} /> },
   { id: "faq", label: "FAQ", hint: "Questions fréquentes", icon: MessagesSquare, render: (p) => <FaqEditor {...p} /> },
   { id: "benefits", label: "Avantages", hint: "Bloc « Pourquoi nous »", icon: Users, render: (p) => <BenefitsEditor {...p} /> },

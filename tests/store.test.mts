@@ -59,6 +59,23 @@ await test("Contenu : le programme ENA couvre les sept matières du concours (FR
   }
 });
 
+await test("Contenu : la galerie est renseignée et alignée entre FR et AR", () => {
+  for (const lang of ["fr", "ar"] as const) {
+    const gallery = bundled[lang].gallery;
+    assert.ok(gallery.items.length > 0, `galerie vide en ${lang}`);
+    for (const item of gallery.items) {
+      assert.ok(item.src.startsWith("/galerie/") || /^https?:/.test(item.src), `chemin invalide en ${lang} : ${item.src}`);
+      assert.ok(item.alt.trim().length > 10, `texte alternatif trop court en ${lang} : ${item.alt}`);
+    }
+    assert.ok(gallery.counterLabel.includes("{current}") && gallery.counterLabel.includes("{total}"), `libellé compteur incomplet en ${lang}`);
+  }
+  assert.deepEqual(
+    bundled.fr.gallery.items.map((item) => item.src),
+    bundled.ar.gallery.items.map((item) => item.src),
+    "les deux langues doivent présenter les mêmes photos, dans le même ordre"
+  );
+});
+
 await test("Diagnostic : activé par ?diagnostic=1 ou #diagnostic, jamais par défaut", () => {
   const at = (search: string, hash = "") => isDiagnosticRequested({ search, hash } as Location);
   assert.equal(at("?diagnostic=1"), true);

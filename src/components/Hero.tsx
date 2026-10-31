@@ -6,15 +6,17 @@ import { ArrowFwd, ContentIcon, Marker, ease } from "./ui";
 const HERO_IMAGE =
   "https://images.pexels.com/photos/18999484/pexels-photo-18999484.jpeg?auto=compress&cs=tinysrgb&w=1400";
 
-const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.75, delay, ease },
+/* Entrée latérale : de la droite vers la gauche (inversée en arabe). */
+const slideIn = (delay: number, dir: 1 | -1, distance = 56) => ({
+  initial: { opacity: 0, x: dir * distance },
+  animate: { opacity: 1, x: 0 },
+  transition: { duration: 0.8, delay, ease },
 });
 
 export default function Hero() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const h = t.hero;
+  const dir: 1 | -1 = lang === "ar" ? -1 : 1;
 
   return (
     <section
@@ -34,7 +36,7 @@ export default function Hero() {
         <div className="text-center lg:text-start">
           <motion.a
             href="#programmes"
-            {...fadeUp(0)}
+            {...slideIn(0, dir)}
             className="group inline-flex max-w-full items-center gap-2.5 rounded-full border border-brand-100 bg-white/90 py-1.5 pe-4 ps-1.5 text-xs font-semibold text-brand-900 shadow-sm backdrop-blur transition-all hover:border-brand-200 hover:shadow-md sm:text-sm"
           >
             <span className="shrink-0 rounded-full bg-sun-400 px-2.5 py-0.5 text-xs font-extrabold text-brand-950">
@@ -46,7 +48,7 @@ export default function Hero() {
 
           <motion.h1
             id="hero-title"
-            {...fadeUp(0.08)}
+            {...slideIn(0.08, dir)}
             className="mt-7 text-balance font-display text-[2.35rem] font-extrabold leading-[1.12] tracking-tight text-brand-950 sm:text-6xl lg:text-[4rem] lg:leading-[1.08]"
           >
             {h.titleA} <span className="text-brand-600">{h.titleAccent}</span>
@@ -54,14 +56,14 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p
-            {...fadeUp(0.16)}
+            {...slideIn(0.16, dir)}
             className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg lg:mx-0"
           >
             {h.subtitle}
           </motion.p>
 
           <motion.div
-            {...fadeUp(0.24)}
+            {...slideIn(0.24, dir)}
             className="mt-9 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start"
           >
             <a href="#contact" className="btn btn-primary group w-full sm:w-auto">
@@ -74,7 +76,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.ul
-            {...fadeUp(0.32)}
+            {...slideIn(0.32, dir)}
             className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-semibold text-brand-900 lg:justify-start"
           >
             {h.points.map((point) => (
@@ -90,8 +92,8 @@ export default function Hero() {
 
         {/* Visuel — sur mobile, les cartes flottantes deviennent un bloc statique sous l'image */}
         <motion.div
-          initial={{ opacity: 0, y: 32, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, x: dir * 72, scale: 0.97 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.15, ease }}
           className="relative mx-auto mt-2 w-full max-w-md px-1 sm:max-w-lg sm:px-0 lg:mt-0 lg:max-w-none"
         >

@@ -86,7 +86,7 @@ export default function Gallery() {
               return (
                 <Reveal
                   key={`${item.src}-${index}`}
-                  delay={(index % 3) * 0.08}
+                  delay={Math.min(index * 0.07, 0.42)}
                   className={cn("h-full", wide && "sm:col-span-2")}
                 >
                   <button

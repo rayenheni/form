@@ -8,22 +8,31 @@ import { useLang } from "../i18n/LanguageContext";
 /** Courbe d'animation commune (douce, type « expo out »). */
 export const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-/* ───────────────────────── Apparition au défilement ───────────────────────── */
+/* ───────────────────────── Apparition au défilement ─────────────────────────
+ * Les blocs entrent en glissant de la droite vers la gauche (et de la gauche
+ * vers la droite en arabe, où le sens de lecture s'inverse).
+ */
 interface RevealProps {
   children: ReactNode;
   delay?: number;
+  /** Décalage vertical résiduel (0 = glissement purement horizontal). */
   y?: number;
+  /** Amplitude du glissement horizontal, en pixels. */
+  x?: number;
   className?: string;
 }
 
-export function Reveal({ children, delay = 0, y = 24, className }: RevealProps) {
+export function Reveal({ children, delay = 0, y = 0, x = 64, className }: RevealProps) {
+  const { lang } = useLang();
+  const offset = lang === "ar" ? -Math.abs(x) : Math.abs(x);
+
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: offset, y }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease }}
+      transition={{ duration: 0.75, delay, ease }}
     >
       {children}
     </motion.div>

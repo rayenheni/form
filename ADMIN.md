@@ -170,7 +170,22 @@ npm run test:admin     # rendu réel des écrans admin et du tableau de bord
 npm run test:analytics # calculs analytique, export CSV, magasins local et Supabase
 npm run typecheck      # vérification des types
 npm run build          # bundle statique dans dist/
+npm run build:hosting  # build + contrôle pour un hébergement Apache (InfinityFree…)
 ```
+
+### Hébergement
+
+Le build tient dans **un seul fichier** `dist/index.html` (CSS et JS inlinés) : il se dépose
+tel quel sur n'importe quel hébergement statique.
+
+| Hébergement | Configuration |
+|---|---|
+| GitHub Pages | `.github/workflows/deploy-pages.yml` (automatique) |
+| Netlify / Cloudflare Pages | `netlify.toml` + `public/_headers` |
+| InfinityFree / Apache mutualisé | `public/.htaccess` — voir **[DEPLOY-INFINITYFREE.md](DEPLOY-INFINITYFREE.md)** |
+
+`npm run build:hosting` vérifie, après compilation, que le bundle est bien mono-fichier,
+que les variables `VITE_*` ont été figées et que `.htaccess` est présent.
 
 Le contenu est stocké en **JSON** : les icônes sont des noms (`Scale`, `GraduationCap`…)
 résolus par le registre `src/constants/icons.ts`. Un nom inconnu en base retombe sur l'icône

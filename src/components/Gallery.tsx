@@ -14,6 +14,8 @@ export default function Gallery() {
   const s = t.gallery;
   const items = s.items.filter((item) => item.src.trim() !== "");
   const [open, setOpen] = useState<number | null>(null);
+  /* Photos verticales : on les affiche entières plutôt que de rogner les visages. */
+  const [portrait, setPortrait] = useState<Record<string, boolean>>({});
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
@@ -101,8 +103,15 @@ export default function Gallery() {
                       alt={item.alt}
                       loading={index === 0 ? "eager" : "lazy"}
                       decoding="async"
+                      onLoad={(event) => {
+                        const img = event.currentTarget;
+                        if (img.naturalHeight > img.naturalWidth * 1.05) {
+                          setPortrait((prev) => (prev[item.src] ? prev : { ...prev, [item.src]: true }));
+                        }
+                      }}
                       className={cn(
-                        "w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+                        "w-full transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+                        portrait[item.src] ? "bg-brand-100/50 object-contain" : "object-cover",
                         wide ? "aspect-[16/10] sm:aspect-[2/1]" : "aspect-[4/3]"
                       )}
                     />

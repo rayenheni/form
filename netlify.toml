@@ -1,5 +1,11 @@
 # Netlify configuration for this Vite + React site.
-# The build settings mirror .github/workflows/deploy-pages.yml (Node 22, `npm run build`, output in `dist`).
+# Build settings mirror .github/workflows/deploy-pages.yml (Node 22, `npm run build`, output in `dist`).
+#
+# ⚠️ Les variables VITE_* sont figées dans le bundle AU MOMENT DU BUILD.
+#    Les définir dans Netlify (Project configuration > Environment variables)
+#    ne suffit pas : il faut ensuite relancer un déploiement
+#    (Deploys > Trigger deploy > Clear cache and deploy site).
+#    Voir DEPLOY-NETLIFY.md.
 
 [build]
   command = "npm run build"
@@ -8,8 +14,15 @@
 [build.environment]
   # Pins the Node.js major version so Netlify's image defaults can't change the build.
   NODE_VERSION = "22"
-  # To send contact-form leads to a webhook or form backend, set VITE_LEADS_ENDPOINT
-  # in the Netlify UI (Project configuration > Environment variables), not here.
+  # VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY / VITE_ADMIN_PATH / VITE_LEADS_ENDPOINT
+  # se règlent dans l'interface Netlify, jamais dans ce fichier (il est public).
+
+# Tout le site tient dans index.html (CSS et JS inlinés) : si ce fichier reste
+# en cache, le visiteur voit l'ancienne version ENTIÈRE. On l'interdit.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Security headers (mirrored in public/_headers for Cloudflare Pages).
 # `unsafe-inline` for scripts/styles is required: the build inlines everything
@@ -22,3 +35,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+# Repli d'application : toute URL inconnue renvoie la page unique.
+# (Le site utilise `#/admin-…`, ce repli n'est donc pas indispensable au routage,
+# mais il évite un 404 sec sur une adresse mal recopiée.)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

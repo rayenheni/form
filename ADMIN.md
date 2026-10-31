@@ -180,8 +180,9 @@ tel quel sur n'importe quel hébergement statique.
 
 | Hébergement | Configuration |
 |---|---|
+| **Netlify + Supabase** | `netlify.toml` — voir **[DEPLOY-NETLIFY.md](DEPLOY-NETLIFY.md)** |
 | GitHub Pages | `.github/workflows/deploy-pages.yml` (automatique) |
-| Netlify / Cloudflare Pages | `netlify.toml` + `public/_headers` |
+| Cloudflare Pages | `public/_headers` |
 | InfinityFree / Apache mutualisé | `public/.htaccess` — voir **[DEPLOY-INFINITYFREE.md](DEPLOY-INFINITYFREE.md)** |
 
 `npm run build:hosting` vérifie, après compilation, que le bundle est bien mono-fichier,

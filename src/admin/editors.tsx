@@ -323,7 +323,7 @@ export function GalleryEditor(props: EditorProps) {
                 )}
               </Field>
               <div className="space-y-4">
-                <Field label="Chemin ou URL de la photo" hint="Ex. /galerie/atelier.jpg">
+                <Field label="Chemin ou URL de la photo" hint="Ex. /galerie/session-formation-equipe.jpg">
                   <TextInput value={item.src} onChange={(v) => helpers.update(index, { src: v.trim() })} />
                 </Field>
                 <Field label="Texte alternatif (accessibilité)" hint="Décrivez la scène en une phrase">

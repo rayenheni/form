@@ -16,6 +16,9 @@ export default function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
   /* Photos verticales : on les affiche entières plutôt que de rogner les visages. */
   const [portrait, setPortrait] = useState<Record<string, boolean>>({});
+  /* Bandeau horizontal : on suit les extrémités pour activer/désactiver les flèches. */
+  const stripRef = useRef<HTMLDivElement | null>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
   const closeRef = useRef<HTMLButtonElement | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
@@ -26,6 +29,33 @@ export default function Gallery() {
     },
     [items.length]
   );
+
+  const updateEdges = useCallback(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const pos = Math.abs(el.scrollLeft);
+    setEdges({ start: pos <= 4, end: pos >= max - 4 });
+  }, []);
+
+  /* Fait défiler le bandeau d'une photo (le sens s'inverse en arabe). */
+  const scrollStrip = useCallback(
+    (direction: 1 | -1) => {
+      const el = stripRef.current;
+      if (!el) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const step = card ? card.getBoundingClientRect().width + 20 : el.clientWidth * 0.8;
+      el.scrollBy({ left: direction * step * (lang === "ar" ? -1 : 1), behavior: "smooth" });
+    },
+    [lang]
+  );
+
+  useEffect(() => {
+    updateEdges();
+    const onResize = () => updateEdges();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [updateEdges, items.length]);
 
   /* Lightbox : flèches, Échap, focus rendu à la vignette d'origine. */
   useEffect(() => {
@@ -74,20 +104,22 @@ export default function Gallery() {
             {s.empty}
           </p>
         ) : (
-          <div
-            className={cn(
-              "mt-12 grid gap-4 sm:mt-14 sm:gap-5",
-              items.length === 1 ? "max-w-3xl sm:mx-auto" : "sm:grid-cols-2 lg:grid-cols-3"
-            )}
-          >
-            {items.map((item, index) => {
-              /* La première photo occupe deux colonnes : la grille reste équilibrée.*/
-              const wide = items.length > 2 && index === 0;
-              return (
+          <>
+            {/* Bandeau horizontal : toutes les photos sur une seule ligne */}
+            <div
+              ref={stripRef}
+              onScroll={updateEdges}
+              tabIndex={0}
+              role="region"
+              aria-label={`${s.titlePre} ${s.titleAccent}`}
+              className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-14 sm:gap-5 [&::-webkit-scrollbar]:hidden"
+            >
+              {items.map((item, index) => (
                 <Reveal
                   key={`${item.src}-${index}`}
-                  delay={Math.min(index * 0.07, 0.42)}
-                  className={cn("h-full", wide && "sm:col-span-2")}
+                  delay={Math.min(index * 0.06, 0.3)}
+                  x={28}
+                  className="w-[82%] shrink-0 snap-start sm:w-[24rem]"
                 >
                   <button
                     type="button"
@@ -110,9 +142,8 @@ export default function Gallery() {
                         }
                       }}
                       className={cn(
-                        "w-full transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
-                        portrait[item.src] ? "bg-brand-100/50 object-contain" : "object-cover",
-                        wide ? "aspect-[16/10] sm:aspect-[2/1]" : "aspect-[4/3]"
+                        "aspect-[4/3] w-full transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+                        portrait[item.src] ? "bg-brand-100/50 object-contain" : "object-cover"
                       )}
                     />
                     <span
@@ -139,9 +170,33 @@ export default function Gallery() {
                     </span>
                   </button>
                 </Reveal>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+
+            {/* Flèches de défilement du bandeau */}
+            {items.length > 1 && (
+              <div className="mt-6 flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => scrollStrip(-1)}
+                  disabled={edges.start}
+                  aria-label={s.prevLabel}
+                  className="grid h-11 w-11 place-items-center rounded-full border border-brand-200 bg-white text-brand-700 shadow-sm transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-900 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/25 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white"
+                >
+                  <ChevronLeft className="h-5 w-5 rtl:-scale-x-100" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollStrip(1)}
+                  disabled={edges.end}
+                  aria-label={s.nextLabel}
+                  className="grid h-11 w-11 place-items-center rounded-full border border-brand-200 bg-white text-brand-700 shadow-sm transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-900 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/25 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white"
+                >
+                  <ChevronRight className="h-5 w-5 rtl:-scale-x-100" />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

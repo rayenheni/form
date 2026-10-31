@@ -97,6 +97,11 @@ dans le site ni dans Git.
 - **Brouillon** : « Enregistrer le brouillon » conserve votre travail sans le publier.
 - **Publier** : envoie le contenu sur le site et crée une version numérotée.
 - **Historique** : liste les versions publiées, avec restauration en un clic.
+- **Galerie** : rubrique *Galerie* — ajout, ordre, légende et étiquette de chaque photo.
+  Déposez les fichiers dans `public/galerie/` du projet, puis indiquez le chemin
+  `/galerie/nom-du-fichier.jpg` (une URL complète fonctionne aussi). Le texte alternatif est
+  obligatoire pour l'accessibilité et le référencement. Formats conseillés : JPG ou WebP,
+  1600 px de large, moins de 400 Ko.
 - **Formations** : rubrique *Formations* — ajout, modification, réordonnancement, duplication,
   suppression, icône, mots-clés, badge, mise en avant. Le champ « Sujet du formulaire de
   contact » alimente la liste déroulante du formulaire.

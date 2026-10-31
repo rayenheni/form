@@ -4,6 +4,7 @@ import Benefits from "./components/Benefits";
 import Contact from "./components/Contact";
 import Expertise from "./components/Expertise";
 import FAQ from "./components/FAQ";
+import Gallery from "./components/Gallery";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import MobileCTA from "./components/MobileCTA";
@@ -62,6 +63,7 @@ function Site() {
         <Showcase onRequest={requestInfo} />
         <Benefits />
         <News />
+        <Gallery />
         <Pricing onRequest={requestInfo} />
         <FAQ />
         <Contact interest={interest} onInterestChange={setInterest} />

@@ -62,6 +62,13 @@ export interface Benefit {
   description: string;
 }
 
+export interface GalleryItem {
+  src: string;
+  alt: string;
+  caption?: string;
+  tag?: string;
+}
+
 export interface Post {
   tag: string;
   title: string;
@@ -150,6 +157,19 @@ export interface SiteContent {
     overlayTitle: string;
     overlayDesc: string;
     items: Benefit[];
+  };
+  gallery: {
+    eyebrow: string;
+    titlePre: string;
+    titleAccent: string;
+    desc: string;
+    empty: string;
+    openLabel: string;
+    closeLabel: string;
+    prevLabel: string;
+    nextLabel: string;
+    counterLabel: string;
+    items: GalleryItem[];
   };
   news: {
     eyebrow: string;
@@ -245,6 +265,7 @@ const fr: SiteContent = {
     { label: "Programmes", href: "#programmes" },
     { label: "Formules", href: "#formules" },
     { label: "Actualités", href: "#actualites" },
+    { label: "Galerie", href: "#galerie" },
     { label: "FAQ", href: "#faq" },
   ],
   langLabel: "Changer de langue",
@@ -487,6 +508,44 @@ const fr: SiteContent = {
       },
     ],
   },
+  gallery: {
+    eyebrow: "Galerie",
+    titlePre: "Nos formations",
+    titleAccent: "en images",
+    desc: "Sessions, ateliers et remises de certificats : un aperçu de la vie du centre.",
+    empty: "Les photos seront publiées très prochainement.",
+    openLabel: "Agrandir la photo",
+    closeLabel: "Fermer la galerie",
+    prevLabel: "Photo précédente",
+    nextLabel: "Photo suivante",
+    counterLabel: "Photo {current} sur {total}",
+    items: [
+      {
+        src: "/galerie/formation.jpg",
+        alt: "Session de formation dans une salle de classe, participants de dos prenant des notes",
+        caption: "Session de formation en présentiel",
+        tag: "Formation",
+      },
+      {
+        src: "/galerie/atelier.jpg",
+        alt: "Atelier juridique : deux participants annotent des documents et surlignent un texte",
+        caption: "Atelier de travail sur dossiers",
+        tag: "Atelier",
+      },
+      {
+        src: "/galerie/bibliotheque.jpg",
+        alt: "Bibliothèque juridique : rayonnages de livres de droit et code ouvert sur une table",
+        caption: "Fonds documentaire juridique",
+        tag: "Ressources",
+      },
+      {
+        src: "/galerie/remise.jpg",
+        alt: "Salle aménagée pour une remise de certificats, avec estrade et rangées de chaises",
+        caption: "Remise des attestations",
+        tag: "Événement",
+      },
+    ],
+  },
   news: {
     eyebrow: "Actualités",
     titlePre: "Nos dernières",
@@ -708,6 +767,7 @@ const ar: SiteContent = {
     { label: "البرامج", href: "#programmes" },
     { label: "الصيغ", href: "#formules" },
     { label: "المستجدات", href: "#actualites" },
+    { label: "معرض الصور", href: "#galerie" },
     { label: "الأسئلة الشائعة", href: "#faq" },
   ],
   langLabel: "تغيير اللغة",
@@ -944,6 +1004,44 @@ const ar: SiteContent = {
         icon: "MessageSquare",
         title: "استشارة مخصصة",
         description: "مستشار يوجهكم نحو المسار المناسب لملفكم وأهدافكم.",
+      },
+    ],
+  },
+  gallery: {
+    eyebrow: "معرض الصور",
+    titlePre: "تكويناتنا",
+    titleAccent: "بالصور",
+    desc: "حصص وورشات وتسليم شهائد: لمحة عن الحياة داخل المركز.",
+    empty: "سيتم نشر الصور قريبًا.",
+    openLabel: "تكبير الصورة",
+    closeLabel: "إغلاق المعرض",
+    prevLabel: "الصورة السابقة",
+    nextLabel: "الصورة التالية",
+    counterLabel: "الصورة {current} من {total}",
+    items: [
+      {
+        src: "/galerie/formation.jpg",
+        alt: "حصة تكوين في قاعة درس، مشاركون من الخلف يدونون الملاحظات",
+        caption: "حصة تكوين حضوري",
+        tag: "تكوين",
+      },
+      {
+        src: "/galerie/atelier.jpg",
+        alt: "ورشة قانونية: مشاركان يكتبان ملاحظات على وثائق ويميّزان نصًا بقلم فسفوري",
+        caption: "ورشة عمل على الملفات",
+        tag: "ورشة",
+      },
+      {
+        src: "/galerie/bibliotheque.jpg",
+        alt: "مكتبة قانونية: رفوف كتب القانون ومدونة مفتوحة على طاولة",
+        caption: "رصيد وثائقي قانوني",
+        tag: "مراجع",
+      },
+      {
+        src: "/galerie/remise.jpg",
+        alt: "قاعة مهيأة لتسليم الشهائد مع منصة وصفوف كراسي",
+        caption: "تسليم الشهائد",
+        tag: "تظاهرة",
       },
     ],
   },

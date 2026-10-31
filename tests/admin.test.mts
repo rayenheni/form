@@ -15,6 +15,7 @@ import {
   BenefitsEditor,
   ContactEditor,
   FaqEditor,
+  GalleryEditor,
   FormationsEditor,
   HeroEditor,
   NewsEditor,
@@ -82,6 +83,18 @@ await test("Formations (fr) : chaque domaine est listé avec son intitulé", () 
   for (const domain of bundled.fr.formations.domains) {
     assert.ok(html.includes(`value="${attr(domain.title)}"`), `domaine manquant : ${domain.title}`);
   }
+});
+
+await test("Galerie (fr) : chaque photo, son texte alternatif et sa légende sont éditables", () => {
+  const html = renderToStaticMarkup(
+    React.createElement(GalleryEditor, { content: bundled.fr, lang: "fr", onSection: noop } satisfies EditorProps)
+  );
+  for (const item of bundled.fr.gallery.items) {
+    assert.ok(html.includes(`value="${attr(item.src)}"`), `photo manquante : ${item.src}`);
+    assert.ok(html.includes(`value="${attr(item.alt)}"`), `texte alternatif manquant : ${item.alt}`);
+    assert.ok(html.includes(`value="${attr(item.caption ?? "")}"`), `légende manquante : ${item.caption}`);
+  }
+  assert.ok(html.includes("public/galerie/"), "aide sur le dossier d'images absente");
 });
 
 await test("FAQ (ar) : les questions arabes sont éditées en RTL", () => {

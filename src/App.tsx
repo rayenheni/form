@@ -13,6 +13,7 @@ import Pricing from "./components/Pricing";
 import Showcase from "./components/Showcase";
 import TrustBar from "./components/TrustBar";
 import AdminPanel from "./admin/AdminPanel";
+import DiagnosticPanel, { isDiagnosticRequested } from "./diagnostics/DiagnosticPanel";
 import { ContentProvider } from "./i18n/ContentProvider";
 import { LanguageProvider, useLang } from "./i18n/LanguageContext";
 import { ADMIN_IS_DEFAULT, isAdminRoute } from "./store";
@@ -89,10 +90,15 @@ function Shell() {
 
   if (admin) return <AdminPanel />;
 
+  /* `?diagnostic=1` : panneau d'état (build, Supabase, source du contenu).
+     Utile en production pour vérifier un déploiement sans outil externe. */
+  const diagnostic = isDiagnosticRequested(window.location);
+
   return (
     <ContentProvider>
       <LanguageProvider>
         <Site />
+        {diagnostic && <DiagnosticPanel />}
       </LanguageProvider>
     </ContentProvider>
   );

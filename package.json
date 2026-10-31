@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:hosting": "vite build && node scripts/check-static.mjs",
     "preview": "vite preview",
     "test:store": "esbuild tests/store.test.mts --bundle --platform=node --format=esm --external:react --external:react-dom --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=tests/.tmp/store.test.mjs --log-level=error && node tests/.tmp/store.test.mjs",
     "seed:content": "esbuild scripts/seed-content.mts --bundle --platform=node --format=esm --packages=external --outfile=scripts/.tmp/seed-content.mjs --log-level=error && node scripts/.tmp/seed-content.mjs",

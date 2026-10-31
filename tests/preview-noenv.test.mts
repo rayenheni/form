@@ -72,5 +72,12 @@ await scenario("#/admin-fbl (repli) → administration", `${base}/#/admin-fbl`, 
   assert.ok(html.includes("accès administrateur") || html.includes("Créer l"), `admin absente (extrait : ${html.slice(0,160)}…)`);
 });
 
+// Le panneau de diagnostic s'ouvre à la demande et décrit le build déployé.
+await scenario("?diagnostic=1 → panneau de diagnostic sans Supabase", `${base}/?diagnostic=1&d=1`, (html) => {
+  assert.ok(html.includes("Diagnostic"), "panneau de diagnostic absent");
+  assert.ok(html.includes("non configuré"), "état Supabase non affiché");
+  assert.ok(html.includes("code intégré"), "source du contenu non affichée");
+});
+
 console.log(`\n${passed} scénario(s) réussi(s), ${failures.length} échec(s).`);
 process.exit(failures.length > 0 ? 1 : 0);
